@@ -16,7 +16,7 @@ Direction Plane::Normal(Point p) const { return {a_, b_, c_}; };
 
 double Plane::Distance(Point p, Direction d) const {
   double denominator = (d.x * a_ + d.y * b_ + d.z * c_);
-  if (std::abs(denominator) < 1e-15) return INF;
+  if (std::abs(denominator) < COINCIDENCE) return INF;
 
   double distance = -Evaluate(p) / denominator;
   return (distance > 0) ? distance : INF;
