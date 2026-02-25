@@ -2,6 +2,8 @@
 
 #include <gtest/gtest.h>
 
+#include <cmath>
+
 namespace charmander {
 
 TEST(BasicTypes, PointConstructor) {
@@ -16,6 +18,13 @@ TEST(BasicTypes, DirectionConstructor) {
   EXPECT_DOUBLE_EQ(d.x, 0.0);
   EXPECT_DOUBLE_EQ(d.y, 0.0);
   EXPECT_DOUBLE_EQ(d.z, 0.0);
+}
+
+TEST(BasicTypes, DirectionConstructorFromPoint) {
+  Point p(1.0, 1.0, 1.0);
+  Direction d(p);
+
+  EXPECT_EQ(d, Direction(1.0, 1.0, 1.0));
 }
 
 TEST(BasicTypes, PointEquality) {
@@ -89,4 +98,17 @@ TEST(BasicTypes, DoubleDirectionMultiplication) {
   EXPECT_EQ(3 * d, Direction(3.0, 3.0, 3.0));
 }
 
+TEST(BasicTypes, DirectionDirectionMultiplication) {
+  Direction a(1.0, 1.0, 1.0);
+  Direction b(3.0, 4.0, 5.0);
+
+  EXPECT_DOUBLE_EQ(a * b, 12.0);
+}
+
+TEST(BasicTypes, NormalizeDirection) {
+  Direction d(1.0, 1.0, 1.0);
+
+  EXPECT_EQ(normalize(d),
+            Direction(1 / std::sqrt(3), 1 / std::sqrt(3), 1 / std::sqrt(3)));
+}
 }  // namespace charmander

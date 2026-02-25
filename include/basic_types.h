@@ -1,11 +1,14 @@
 #ifndef CHARMANDER_BASIC_TYPES_H_
 #define CHARMANDER_BASIC_TYPES_H_
 
+#include <cmath>
 #include <limits>
 
 namespace charmander {
 
 constexpr double INF = std::numeric_limits<double>::infinity();
+
+constexpr double COINCIDENCE = 1e-15;
 
 // ----------------------------------------------------------------------------
 // Point
@@ -28,6 +31,7 @@ struct Direction {
   const double y;
   const double z;
   Direction(double _x, double _y, double _z) : x(_x), y(_y), z(_z) {}
+  Direction(Point p) : x(p.x), y(p.y), z(p.z) {}
 };
 
 // ----------------------------------------------------------------------------
@@ -72,6 +76,15 @@ inline Direction operator-(const Direction& d) {
 
 inline Direction operator*(const double& a, const Direction& d) {
   return Direction(a * d.x, a * d.y, a * d.z);
+}
+
+inline double operator*(const Direction& a, const Direction& b) {
+  return a.x * b.x + a.y * b.y + a.z * b.z;
+}
+
+inline Direction normalize(const Direction& d) {
+  double norm = std::sqrt(d.x * d.x + d.y * d.y + d.z * d.z);
+  return Direction(d.x / norm, d.y / norm, d.z / norm);
 }
 
 }  // namespace charmander
