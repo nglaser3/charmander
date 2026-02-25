@@ -13,6 +13,8 @@ class Surface {
 
   virtual double Evaluate(Point p) const = 0;
 
+  virtual Direction Normal(Point p) const = 0;
+
   virtual double Distance(Point p, Direction d) const = 0;
 
  protected:
