@@ -28,5 +28,7 @@ add_subdirectory(src)
 # --------------------------------------------------------------------------- #
 # Testing
 # --------------------------------------------------------------------------- #
-
-add_subdirectory(tests)
+option(CHARMANDER_BUILD_TESTS "Build charmander test suite" OFF)
+if(CHARMANDER_BUILD_TESTS)
+  add_subdirectory(tests)
+endif()
