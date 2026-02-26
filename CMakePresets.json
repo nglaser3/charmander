@@ -1,0 +1,35 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CHARMANDER_BUILD_TESTS": "ON"
+      }
+    },
+    {
+      "name": "rel",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "rel",
+      "configurePreset": "rel"
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "rel",
+      "steps": [
+        {"type": "configure", "name": "rel"},
+        {"type": "build", "name": "rel"}
+      ]
+    }
+  ]
+}
