@@ -60,7 +60,7 @@ TEST(SurfacesPlane, PlaneNormal) {
 
   EXPECT_EQ(ZPlane(0.0).Normal(p), Direction(0.0, 0.0, 1.0));
 
-  EXPECT_EQ(Plane(1.0, 1.0, 1.0, 0.0).Normal(p), Direction(1.0, 1.0, 1.0));
+  EXPECT_EQ(Plane(1.0, 1.0, 1.0, 0.0).Normal(p), normalize({1.0, 1.0, 1.0}));
 };
 
 TEST(SurfacesPlane, PlaneDistance) {
