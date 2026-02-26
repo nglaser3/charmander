@@ -30,5 +30,6 @@ add_subdirectory(src)
 # --------------------------------------------------------------------------- #
 option(CHARMANDER_BUILD_TESTS "Build charmander test suite" OFF)
 if(CHARMANDER_BUILD_TESTS)
+  enable_testing()
   add_subdirectory(tests)
 endif()

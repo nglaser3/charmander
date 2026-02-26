@@ -29,7 +29,6 @@ FetchContent_MakeAvailable(googletest)
 # --------------------------------------------------------------------------- #
 # Setup test executable
 # --------------------------------------------------------------------------- #
-enable_testing()
 include(GoogleTest)
 
 file(

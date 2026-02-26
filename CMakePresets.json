@@ -15,12 +15,48 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release"
       }
+    },
+    {
+      "name": "ci",
+      "inherits": "base",
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "CMAKE_COMPILE_WARNING_AS_ERROR": "ON"
+      }
     }
   ],
   "buildPresets": [
     {
       "name": "rel",
       "configurePreset": "rel"
+    },
+    {
+      "name": "ci",
+      "configurePreset": "ci"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "rel",
+      "configurePreset": "rel",
+      "output": {
+        "outputOnFailure": true,
+        "shortProgress": true
+      }
+    },
+    {
+      "name": "ci",
+      "configurePreset": "ci",
+      "output": {
+        "outputOnFailure": true,
+        "shortProgress": true
+      },
+      "execution": {
+        "noTestsAction": "error",
+        "parallelLevel":0
+      }
     }
   ],
   "workflowPresets": [
@@ -29,6 +65,14 @@
       "steps": [
         {"type": "configure", "name": "rel"},
         {"type": "build", "name": "rel"}
+      ]
+    },
+    {
+      "name": "ci",
+      "steps": [
+        {"type": "configure", "name": "ci"},
+        {"type": "build", "name": "ci"},
+        {"type": "test", "name": "ci"}
       ]
     }
   ]
