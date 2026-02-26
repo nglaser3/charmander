@@ -8,13 +8,17 @@
 
 namespace charmander {
 TEST(SurfacesCylinder, CylinderConstructor) {
-  Point p(0.0, 0.0, 0.0);
+  Point p0(0.0, 0.0, 0.0);
+  Point p1(1.0, 2.0, 3.0);
   Direction d(1.0, 0.0, 0.0);
 
-  EXPECT_NO_THROW(XCylinder(1.0, p));
-  EXPECT_NO_THROW(YCylinder(1.0, p));
-  EXPECT_NO_THROW(ZCylinder(1.0, p));
-  EXPECT_NO_THROW(Cylinder(1.0, d, p));
+  EXPECT_NO_THROW(XCylinder(1.0, p0));
+  EXPECT_NO_THROW(XCylinder(1.0, p1));
+  EXPECT_NO_THROW(YCylinder(1.0, p0));
+  EXPECT_NO_THROW(YCylinder(1.0, p1));
+  EXPECT_NO_THROW(ZCylinder(1.0, p0));
+  EXPECT_NO_THROW(ZCylinder(1.0, p1));
+  EXPECT_NO_THROW(Cylinder(1.0, d, p0));
 };
 
 TEST(SurfacesCylinder, CylinderSense) {
@@ -143,15 +147,16 @@ TEST(SurfacesCylinder, CylinderDistance) {
   EXPECT_DOUBLE_EQ(zcyl.Distance(pz, zparallel), INF);
 
   Direction axis = normalize({1.0, 1.0, 1.0});
-  Direction v(1.0, -1.0, 0.0);  // arbitrary normal
-  Direction vhat = normalize(v);
+  Direction vhat = normalize({1.0, -1.0, 0.0});
   Point p(2.0 * vhat.x, 2.0 * vhat.y, 2.0 * vhat.z);
   Direction perpto = -vhat;
   Direction perpaway = -perpto;
   Direction parallel = axis;
+  Direction no_intersect = normalize({1.0, 1.0, 0.0});
   Cylinder cyl(1.0, axis, c);
   EXPECT_DOUBLE_EQ(cyl.Distance(p, perpto), 1.0);
   EXPECT_DOUBLE_EQ(cyl.Distance(p, perpaway), INF);
   EXPECT_DOUBLE_EQ(cyl.Distance(p, parallel), INF);
+  EXPECT_DOUBLE_EQ(cyl.Distance(p, no_intersect), INF);
 }
 }  // namespace charmander

@@ -3,6 +3,7 @@
 #include <gtest/gtest.h>
 
 #include <cmath>
+#include <iostream>
 
 namespace charmander {
 
@@ -28,11 +29,15 @@ TEST(BasicTypes, DirectionConstructorFromPoint) {
 }
 
 TEST(BasicTypes, PointEquality) {
-  Point a(1.0, 1.0, 1.0);
-  Point b(1.0, 1.0, 1.0);
-  Point c(1.0, 1.0, -1.0);
-  EXPECT_TRUE(a == b);
-  EXPECT_FALSE(a == c);
+  Point a(1.0, 0.0, 0.0);
+  Point b(0.0, 1.0, 0.0);
+  Point c(0.0, 0.0, 1.0);
+  Point d(0.0, 0.0, 0.0);
+  Point e(0.0, 0.0, 0.0);
+  EXPECT_FALSE(a == b);
+  EXPECT_FALSE(b == c);
+  EXPECT_FALSE(c == d);
+  EXPECT_TRUE(d == e);
 }
 
 TEST(BasicTypes, PointAddition) {
@@ -63,13 +68,36 @@ TEST(BasicTypes, PointDirectionSubtraction) {
   EXPECT_EQ(p - d, Point(0.0, 0.0, 0.0));
 }
 
-TEST(BasicTypes, DirectionEquality) {
-  Direction a(1.0, 1.0, 1.0);
-  Direction b(1.0, 1.0, 1.0);
-  Direction c(1.0, 1.0, -1.0);
+TEST(BasicTypes, PointOutputStream) {
+  Point d(1.0, 2.0, 3.0);
 
-  EXPECT_TRUE(a == b);
-  EXPECT_FALSE(a == c);
+  std::ostringstream outputstream;
+  outputstream << d;
+  EXPECT_EQ(outputstream.str(), "Point(1, 2, 3)");
+}
+
+TEST(BasicTypes, FuzzyEqualPoint) {
+  Point a(1.0, 0.0, 0.0);
+  Point b(0.0, 1.0, 0.0);
+  Point c(0.0, 0.0, 1.0);
+  Point d(0.0, 0.0, 0.0);
+  Point e(0.0, 0.0, 0.0);
+  EXPECT_FALSE(fuzzyequal(a, b));
+  EXPECT_FALSE(fuzzyequal(b, c));
+  EXPECT_FALSE(fuzzyequal(c, d));
+  EXPECT_TRUE(fuzzyequal(d, e));
+}
+
+TEST(BasicTypes, DirectionEquality) {
+  Direction a(1.0, 0.0, 0.0);
+  Direction b(0.0, 1.0, 0.0);
+  Direction c(0.0, 0.0, 1.0);
+  Direction d(0.0, 0.0, 0.0);
+  Direction e(0.0, 0.0, 0.0);
+  EXPECT_FALSE(a == b);
+  EXPECT_FALSE(b == c);
+  EXPECT_FALSE(c == d);
+  EXPECT_TRUE(d == e);
 }
 
 TEST(BasicTypes, DirectionAddition) {
@@ -105,10 +133,32 @@ TEST(BasicTypes, DirectionDirectionMultiplication) {
   EXPECT_DOUBLE_EQ(a * b, 12.0);
 }
 
+TEST(BasicTypes, DirectionOutputStream) {
+  Direction d(1.0, 2.0, 3.0);
+
+  std::ostringstream outputstream;
+  outputstream << d;
+  EXPECT_EQ(outputstream.str(), "Direction(1, 2, 3)");
+}
+
 TEST(BasicTypes, NormalizeDirection) {
   Direction d(1.0, 1.0, 1.0);
 
   EXPECT_EQ(normalize(d),
             Direction(1 / std::sqrt(3), 1 / std::sqrt(3), 1 / std::sqrt(3)));
 }
+
+TEST(BasicTypes, FuzzyEqualDirection) {
+  Direction a(1.0, 0.0, 0.0);
+  Direction b(0.0, 1.0, 0.0);
+  Direction c(0.0, 0.0, 1.0);
+  Direction d(0.0, 0.0, 0.0);
+  Direction e(0.0, 0.0, 0.0);
+  EXPECT_FALSE(fuzzyequal(a, b));
+  EXPECT_FALSE(fuzzyequal(b, c));
+  EXPECT_FALSE(fuzzyequal(c, d));
+  EXPECT_TRUE(fuzzyequal(d, e));
+}
+
 }  // namespace charmander
+
