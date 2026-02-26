@@ -16,9 +16,9 @@ Direction Plane::Normal(Point p) const { return {a_, b_, c_}; };
 
 double Plane::Distance(Point p, Direction d) const {
   double denominator = (d.x * a_ + d.y * b_ + d.z * c_);
-  if (std::abs(denominator) < COINCIDENCE) return INF;
+  if (std::abs(denominator) < FP_TOLERANCE) return INF;
 
   double distance = -Evaluate(p) / denominator;
-  return (distance > 0) ? distance : INF;
+  return (distance > COINCIDENT_SURF) ? distance : INF;
 };
 }  // namespace charmander
