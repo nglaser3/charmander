@@ -1,0 +1,39 @@
+name: report-charmander-coverage 
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.event_name }}-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Charmander 
+        uses: actions/checkout@v4
+
+      - name: CMake Coverage Workflow
+        shell: bash
+        run: |
+          cmake --workflow --preset cov-gcc
+
+      - name: Generate Coverage Report
+        shell: bash
+        run: |
+          gcovr \
+            --config gcovr.cfg \
+            --cobertura --output build/cov/coverage.xml
+
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          files: build/cov/coverage.xml
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
