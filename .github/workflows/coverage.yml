@@ -19,6 +19,11 @@ jobs:
       - name: Checkout Charmander 
         uses: actions/checkout@v4
 
+      - name: Install gcovr
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install gcovr
+
       - name: CMake Coverage Workflow
         shell: bash
         run: |
