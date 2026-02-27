@@ -1,8 +1,8 @@
-#ifndef CHARMANDER_SURFACES_PLANE_H_
-#define CHARMANDER_SURFACES_PLANE_H_
+#ifndef CHARMANDER_GEOMETRY_PLANE_H_
+#define CHARMANDER_GEOMETRY_PLANE_H_
 
 #include "basic_types.h"
-#include "surfaces/surface.h"
+#include "geometry/surface.h"
 
 namespace charmander {
 
@@ -40,4 +40,4 @@ class ZPlane : public Plane {
 
 }  // namespace charmander
 
-#endif  // CHARMANDER_SURFACES_PLANE_H_
+#endif  // CHARMANDER_GEOMETRY_PLANE_H_

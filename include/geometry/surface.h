@@ -1,5 +1,5 @@
-#ifndef CHARMANDER_SURFACES_SURFACE_H_
-#define CHARMANDER_SURFACES_SURFACE_H_
+#ifndef CHARMANDER_GEOMETRY_SURFACE_H_
+#define CHARMANDER_GEOMETRY_SURFACE_H_
 
 #include "basic_types.h"
 
@@ -22,4 +22,4 @@ class Surface {
 };
 
 }  // namespace charmander
-#endif  // CHARMANDER_SURFACES_SURFACE_H_
+#endif  // CHARMANDER_GEOMETRY_SURFACE_H_

@@ -1,8 +1,8 @@
-#ifndef CHARMANDER_SURFACES_CYLINDER_H_
-#define CHARMANDER_SURFACES_CYLINDER_H_
+#ifndef CHARMANDER_GEOMETRY_CYLINDER_H_
+#define CHARMANDER_GEOMETRY_CYLINDER_H_
 
 #include "basic_types.h"
-#include "surfaces/surface.h"
+#include "geometry/surface.h"
 
 namespace charmander {
 
@@ -42,4 +42,4 @@ class ZCylinder : public Cylinder {
 
 }  // namespace charmander
 
-#endif  // CHARMANDER_SURFACES_CYLINDER_H_
+#endif  // CHARMANDER_GEOMETRY_CYLINDER_H_
