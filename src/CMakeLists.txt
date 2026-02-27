@@ -1,8 +1,11 @@
 # --------------------------------------------------------------------------- #
-# Configure Charmander library
+# Configure main Charmander library
 # --------------------------------------------------------------------------- #
-file(
-  GLOB_RECURSE CHARMANDER_CC_FILES CONFIGURE_DEPENDS "${CHARMANDER_SRC_DIR}/*.cc"
+set(CHARMANDER_CC_FILES
+  geometry/geometry.cc
+  geometry/surface.cc
+  geometry/cylinder.cc
+  geometry/plane.cc
 )
 
 add_library(
