@@ -19,6 +19,10 @@ list(
 # path configurations
 include(CharmanderPaths)
 
+# find external dependencies
+include(CharmanderFindPackages)
+
+# setup code coverage
 include(CharmanderCoverage)
 
 # --------------------------------------------------------------------------- #
