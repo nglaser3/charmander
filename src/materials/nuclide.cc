@@ -12,7 +12,7 @@
 
 namespace hdf5_helpers
 {
-  std::filesystem::path resolve_xs_file_path(std::string nuclide_name) {
+  std::string resolve_xs_file_path(std::string nuclide_name) {
     // get xs env var, fail if not found
     const char* var = std::getenv("CHARMANDER_CROSS_SECTIONS");
     if (!var) {
@@ -26,18 +26,13 @@ namespace hdf5_helpers
       throw std::runtime_error("XS file for " + nuclide_name + " not found! " + "Tried: " + xs_file.string());
     }
 
-    return xs_file;
+    return xs_file.string();
   };
 
-  hid_t open_xs_file(std::filesystem::path filename) {
+  hid_t open_xs_file(std::string filename) {
     hid_t file_id = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
-    if (file_id < 0) throw std::runtime_error("Failed to open HDF5 file: " + filename.string());
+    if (file_id < 0) throw std::runtime_error("Failed to open HDF5 file: " + filename);
     return file_id;
-  };
-
-  bool does_attribute_exist(hid_t file_id, std::string attribute)
-  {
-    return 0 < H5Aexists_by_name(file_id, ".", attribute.c_str(), H5P_DEFAULT);
   };
 
   std::string get_energy_path(std::string nuclide_name, std::string temperature) {
@@ -49,7 +44,7 @@ namespace hdf5_helpers
   }
 
   // ONLY WORKS FOR 1D DATASETS
-  size_t get_dataset_size(hid_t file_id, const std::string dataset_path) {
+  size_t get_1D_dataset_size(hid_t file_id, const std::string dataset_path) {
     hsize_t dims[1];
     H5T_class_t type_class;
     size_t type_size;
@@ -61,6 +56,7 @@ namespace hdf5_helpers
     return static_cast<size_t>(dims[0]);
   }
 
+
 } // namespace hdf5_helpers 
 
 namespace charmander
@@ -68,29 +64,74 @@ namespace charmander
   
 void Nuclide::LoadFromFile() {
 
-  std::filesystem::path xs_file = hdf5_helpers::resolve_xs_file_path(nuclide_name_);
+  std::string xs_file = hdf5_helpers::resolve_xs_file_path(nuclide_name_);
   hid_t file_id = hdf5_helpers::open_xs_file(xs_file);
 
   // energies 
   std::string energy_path = hdf5_helpers::get_energy_path(nuclide_name_, temperature_);
-  size_t energy_size = hdf5_helpers::get_dataset_size(file_id, energy_path);
+  size_t energy_size = hdf5_helpers::get_1D_dataset_size(file_id, energy_path);
   evaluation_energies_.resize(energy_size);
   if (H5LTread_dataset_double(file_id, energy_path.c_str(), evaluation_energies_.data()) < 0) {
     throw std::runtime_error("Failed to read evaluation energies: " + energy_path);
   }
 
+  // total xs
+  total_xs_.assign(energy_size, 0.0f);
+
   // elastic xs
   std::string elastic_path = hdf5_helpers::get_xs_1D_data_path(nuclide_name_, "002", temperature_);
-  elastic_xs_.resize(energy_size);
-  if (H5LTread_dataset_float(file_id, elastic_path.c_str(), elastic_xs_.data()) < 0) {
-    throw std::runtime_error("Failed to read elastic scattering xs: " + elastic_path);
+  if (H5LTpath_valid(file_id, elastic_path.c_str(), 1) > 0) {
+    elastic_xs_.resize(energy_size);
+    if (H5LTread_dataset_float(file_id, elastic_path.c_str(), elastic_xs_.data()) < 0) {
+      throw std::runtime_error("Failed to read elastic scattering xs: " + elastic_path);
+    }
+    for (size_t idx=0; idx<energy_size; idx++)
+    {
+      total_xs_[idx] += elastic_xs_[idx];
+    }
   }
 
   // inelastic xs
+  std::string inelastic_path = hdf5_helpers::get_xs_1D_data_path(nuclide_name_, "004", temperature_);
+  if (H5LTpath_valid(file_id, inelastic_path.c_str(), 1) > 0) {
+    inelastic_xs_.resize(energy_size);
+    if (H5LTread_dataset_float(file_id, inelastic_path.c_str(), inelastic_xs_.data()) < 0) {
+      throw std::runtime_error("Failed to read inelastic scattering xs: " + inelastic_path);
+    }
+    for (size_t idx=0; idx<energy_size; idx++)
+    {
+      total_xs_[idx] += inelastic_xs_[idx];
+    }
+  }
   
   // capture xs
-  //std::string capture_xs = hdf5_helpers::get_xs_1D_data_path(nuclide_name_, "102", temperature_)
+  std::string capture_path = hdf5_helpers::get_xs_1D_data_path(nuclide_name_, "102", temperature_);
+  if (H5LTpath_valid(file_id, capture_path.c_str(), 1) > 0) {
+    capture_xs_.resize(energy_size);
+    if (H5LTread_dataset_float(file_id, capture_path.c_str(), capture_xs_.data()) < 0) {
+      throw std::runtime_error("Failed to read capture xs: " + capture_path);
+    }
+    for (size_t idx=0; idx<energy_size; idx++)
+    {
+      total_xs_[idx] += capture_xs_[idx];
+    }
+  }
 
+  // fission xs
+  std::string fission_path = hdf5_helpers::get_xs_1D_data_path(nuclide_name_, "018", temperature_);
+  if (H5LTpath_valid(file_id, fission_path.c_str(), 1) > 0) {
+    fission_xs_.resize(energy_size);
+    if (H5LTread_dataset_float(file_id, fission_path.c_str(), fission_xs_.data()) < 0) {
+      throw std::runtime_error("Failed to read fission xs: " + fission_path);
+    }
+    for (size_t idx=0; idx<energy_size; idx++)
+    {
+      total_xs_[idx] += fission_xs_[idx];
+    }
+  }
+
+  // DO NOT FORGET TO DO THIS, MEMORY LEAK OTHERWISE
+  H5Fclose(file_id);
 };
 
 } // namespace charmander

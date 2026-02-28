@@ -20,6 +20,7 @@ class Nuclide
 
     std::vector<float> total_xs_;
     std::vector<float> elastic_xs_;
+    std::vector<float> inelastic_xs_;
     std::vector<float> capture_xs_;
     std::vector<float> fission_xs_;
 
