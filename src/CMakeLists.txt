@@ -2,7 +2,7 @@
 # Configure Charmander hdf5 io library
 # --------------------------------------------------------------------------- #
 set(CHARMANDER_HDF5_XS_FILES
-  materials/micro_xs.cc
+  materials/nuclide.cc
 )
 
 add_library(
@@ -15,7 +15,10 @@ target_compile_features(
   lib_charmander_xs PUBLIC cxx_std_17
 )
 target_link_libraries(
-  lib_charmander_xs PRIVATE HDF5::HDF5
+  lib_charmander_xs PRIVATE ${HDF5_C_LIBRARIES} ${HDF5_C_HL_LIBRARIES}
+)
+target_include_directories(
+  lib_charmander_xs PRIVATE ${HDF5_INCLUDE_DIRS}
 )
 
 # --------------------------------------------------------------------------- #
