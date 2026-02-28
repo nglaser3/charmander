@@ -23,7 +23,6 @@ class Nuclide
     std::vector<float> inelastic_xs_;
     std::vector<float> capture_xs_;
     std::vector<float> fission_xs_;
-
 };
 
 } // namespace charmander
