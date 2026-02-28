@@ -5,13 +5,9 @@
 #include <iostream>
 #include <limits>
 
+#include "constants.h"
+
 namespace charmander {
-
-constexpr double INF = std::numeric_limits<double>::infinity();
-
-constexpr double FP_TOLERANCE = 1e-12;
-
-constexpr double COINCIDENT_SURF = 1e-12;
 
 // ----------------------------------------------------------------------------
 // Point

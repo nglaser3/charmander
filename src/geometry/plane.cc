@@ -2,6 +2,7 @@
 
 #include <cmath>
 
+#include "constants.h"
 #include "basic_types.h"
 
 namespace charmander {
