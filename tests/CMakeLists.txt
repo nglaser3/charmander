@@ -39,7 +39,7 @@ add_executable(
   charmander_tests ${TEST_CC_FILES}
 )
 target_include_directories(
-  charmander_tests PRIVATE ${CHARMANDER_INCLUDE_DIR}
+  charmander_tests PRIVATE ${CHARMANDER_INCLUDE_DIR} ${HDF5_INCLUDE_DIRS} 
 )
 target_link_libraries(
   charmander_tests PRIVATE GTest::gtest_main lib_charmander
