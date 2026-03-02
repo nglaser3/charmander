@@ -45,7 +45,7 @@ namespace charmander
  }
 
  void XSFileInterface::CloseXSFile() {
-  H5Fclose(file_id_);
+  if (file_id_ >= 0) H5Fclose(file_id_);
   file_id_ = -1; // avoids accidental attempts to reclose
  }
 
