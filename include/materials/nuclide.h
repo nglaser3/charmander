@@ -11,7 +11,10 @@ class Nuclide
 {
   public:
     Nuclide(std::string nuclide): nuclide_name_(nuclide){};
+
     void LoadFromFile();
+
+    void ConstructTotalXS(std::vector<float>& total_xs) const;
   private:
     std::string nuclide_name_;
     std::string temperature_ = "294K";

@@ -74,9 +74,12 @@ namespace charmander
     return static_cast<size_t>(dims[0]);
  } 
 
- void XSFileInterface::Load1DXSDataset(const std::string& mt_rxn, const std::string& temperature, std::vector<float>& xs) const {
+ void XSFileInterface::Load1DXSDataset(const std::string& mt_rxn, const std::string& temperature, std::vector<float>& xs, const size_t& target_size) const {
     std::string path = Get1DXSDataPath(mt_rxn, temperature);
     size_t size = Get1DDatasetSize(path);
+    if (size != target_size) {
+      throw std::runtime_error("XS data for MT " + mt_rxn + " has size " + std::to_string(size) + ", but energy size is " + std::to_string(target_size));
+    }
     xs.resize(size);
     if (H5LTread_dataset_float(file_id_, path.c_str(), xs.data()) < 0) {
       throw std::runtime_error("Failed to read MT " + mt_rxn + " xs: " + path);

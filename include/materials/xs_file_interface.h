@@ -26,7 +26,7 @@ namespace charmander
 
     size_t Get1DDatasetSize(const std::string& dataset_path) const;
 
-    void Load1DXSDataset(const std::string& mt_rxn, const std::string& temperature, std::vector<float>& xs) const;
+    void Load1DXSDataset(const std::string& mt_rxn, const std::string& temperature, std::vector<float>& xs, const size_t& target_size) const;
 
     std::string Get1DXSDataPath(const std::string& mt_rxn, const std::string& temperature) const;
 
