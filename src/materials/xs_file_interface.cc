@@ -86,6 +86,25 @@ namespace charmander
     }
  }
 
+ void XSFileInterface::LeftPadLoad1DXSDataset(const std::string& mt_rxn, const std::string& temperature, std::vector<float>& xs, const size_t& target_size) const {
+    std::string path = Get1DXSDataPath(mt_rxn, temperature);
+    size_t size = Get1DDatasetSize(path);
+    if (size > target_size) {
+      throw std::runtime_error("Left pad specified for MT " + mt_rxn + " is larger than the corresponding energy grid.");
+    }
+    size_t left_pad_size = target_size - size;
+    std::vector<float> temporary_holder(size); 
+    if (H5LTread_dataset_float(file_id_, path.c_str(), temporary_holder.data()) < 0) {
+      throw std::runtime_error("Failed to read MT " + mt_rxn + " xs: " + path);
+    }
+    xs.assign(target_size, 0.0f);
+    std::copy(
+      temporary_holder.begin(),
+      temporary_holder.end(),
+      xs.begin() + left_pad_size
+    );
+ }
+
  std::string XSFileInterface::Get1DXSDataPath(const std::string& mt_rxn, const std::string& temperature) const {
   return "/" + nuclide_ + "/reactions/reaction_" + mt_rxn + "/" + temperature + "/xs";
  }
