@@ -2,6 +2,7 @@
 # Configure Charmander hdf5 io library
 # --------------------------------------------------------------------------- #
 set(CHARMANDER_HDF5_XS_FILES
+  materials/xs_file_interface.cc
   materials/nuclide.cc
 )
 

@@ -18,7 +18,7 @@ namespace charmander
 
     hid_t OpenXSFile(const std::string& filename) const;
 
-    void CloseXSFile() const;
+    void CloseXSFile();
 
     void LoadEvaluationEnergies(const std::string& temperature, std::vector<double>& energies) const;
 
@@ -32,7 +32,7 @@ namespace charmander
 
   private:
     const std::string nuclide_;
-    const hid_t file_id_;
+    hid_t file_id_;
   };
   
 } // namespace charmander

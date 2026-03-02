@@ -30,9 +30,9 @@ namespace charmander
 
     // portable path (windows and unix)
     std::filesystem::path root_xs_dir(var);
-    std::filesystem::path xs_file = root_xs_dir / (nuclide_name + ".h5");
+    std::filesystem::path xs_file = root_xs_dir / (nuclide + ".h5");
     if (!std::filesystem::exists(xs_file)) {
-      throw std::runtime_error("XS file for " + nuclide_name + " not found! Tried: " + xs_file.string());
+      throw std::runtime_error("XS file for " + nuclide + " not found! Tried: " + xs_file.string());
     }
 
     return xs_file.string();
@@ -53,7 +53,7 @@ namespace charmander
     std::string path = GetEnergyPath(temperature);
     size_t size = Get1DDatasetSize(path);
     energies.resize(size);
-    if (H5LTread_dataset_double(file_id, path.c_str(), energies.data()) < 0) {
+    if (H5LTread_dataset_double(file_id_, path.c_str(), energies.data()) < 0) {
       throw std::runtime_error("Failed to read evaluation energies: " + path);
     }
  }
@@ -78,8 +78,8 @@ namespace charmander
     std::string path = Get1DXSDataPath(mt_rxn, temperature);
     size_t size = Get1DDatasetSize(path);
     xs.resize(size);
-    if (H5LTread_dataset_float(file_id, path.c_str(), xs.data()) < 0) {
-      throw std::runtime_error("Failed to read MT " + reaction + " xs: " + path);
+    if (H5LTread_dataset_float(file_id_, path.c_str(), xs.data()) < 0) {
+      throw std::runtime_error("Failed to read MT " + mt_rxn + " xs: " + path);
     }
  }
 
