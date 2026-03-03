@@ -14,9 +14,9 @@ namespace charmander
     XSFileInterface(const std::string& nuclide);
     ~XSFileInterface();
 
-    std::string ResolveFilePath(const std::string& nuclide) const;
+    static std::string ResolveFilePath(const std::string& nuclide);
 
-    hid_t OpenXSFile(const std::string& filename) const;
+    hid_t OpenXSFile(const std::string& filename) const; // probs shouldnt be public...
 
     void CloseXSFile();
 

@@ -21,7 +21,7 @@ namespace charmander
   CloseXSFile();
  }
 
- std::string XSFileInterface::ResolveFilePath(const std::string& nuclide) const {
+ std::string XSFileInterface::ResolveFilePath(const std::string& nuclide) {
     // get xs env var, fail if not found
     const char* var = std::getenv("CHARMANDER_CROSS_SECTIONS");
     if (!var) {
