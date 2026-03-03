@@ -15,8 +15,6 @@ void Nuclide::LoadFromFile() {
   xs_file.LoadEvaluationEnergies(temperature_, evaluation_energies_);
 
   // fill the xs
-  total_xs_.assign(evaluation_energies_.size(),
-                   0.0f);  // temporary before adding an actual function
   xs_file.Load1DXSDataset("002", temperature_, xs_map_[MT::ELASTIC],
                           evaluation_energies_.size());
   xs_file.LeftPadLoad1DXSDataset("004", temperature_, xs_map_[MT::INELASTIC],
@@ -32,6 +30,7 @@ void Nuclide::LoadFromFile() {
 
 void Nuclide::ConstructTotalXS(std::vector<float> total_xs) const {
   size_t length = evaluation_energies_.size();
+  total_xs.resize(length);
   for (const auto& [mt, xs] : xs_map_) {
     for (size_t i = 0; i < length; ++i) {
       total_xs[i] = xs[i];
