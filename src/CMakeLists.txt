@@ -13,7 +13,7 @@ target_include_directories(
   lib_charmander_xs PUBLIC ${CHARMANDER_INCLUDE_DIR}
 )
 target_compile_features(
-  lib_charmander_xs PUBLIC cxx_std_17
+  lib_charmander_xs PUBLIC cxx_std_20
 )
 target_link_libraries(
   lib_charmander_xs PRIVATE ${HDF5_C_LIBRARIES} ${HDF5_C_HL_LIBRARIES}
@@ -39,7 +39,7 @@ target_include_directories(
   lib_charmander PUBLIC ${CHARMANDER_INCLUDE_DIR}
 )
 target_compile_features(
-  lib_charmander PUBLIC cxx_std_17
+  lib_charmander PUBLIC cxx_std_20
 )
 target_link_libraries(
   lib_charmander PRIVATE lib_charmander_xs
