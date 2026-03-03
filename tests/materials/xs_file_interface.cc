@@ -57,18 +57,56 @@ namespace charmander
       std::string xs_path_;
       std::string nuclide_;
       std::unique_ptr<XSFileInterface> interface_;
+      std::string test_xs_dir_;
+      bool has_original_{false};
+      std::string old_env_var_;
+      std::string charmander_xs_{"CHARMANDER_CROSS_SECTIONS"};
 
       void SetUp() override {
 
         // tell hdf5 to be quiet, it has ugly error output that pollutes test output
         H5Eset_auto(H5E_DEFAULT, nullptr, nullptr);
 
-        const char* var = std::getenv("CHARMANDER_CROSS_SECTIONS");
-        ASSERT_NE(var, nullptr) << "CHARMANDER_CROSS_SECTIONS environment variable must be set.";
-        xs_path_ = var;
+        const char* var = std::getenv(charmander_xs_.c_str());
+        if (var)
+        {
+          has_original_= true;
+          old_env_var_ = var;
+        }
+        
+        // defined in test level cmake, avoids having to determine path at runtim
+        std::filesystem::path test_xs_root = CHARMANDER_TEST_DATA_DIR;
+        test_xs_dir_ = (test_xs_root / "fake_cross_sections").string();
 
-        nuclide_ = "U235";
+        #ifdef _WIN32
+          _putenv_s(charmander_xs_.c_str(), test_xs_dir_.c_str());
+        #else
+          setenv(charmander_xs_.c_str(), test_xs_dir_.c_str(), 1);
+        #endif
+
+        const char* gotten = std::getenv(charmander_xs_.c_str());
+        ASSERT_EQ(std::string(gotten), test_xs_dir_);
+        xs_path_ = gotten;
+
+        nuclide_ = "FakeU235";
         ASSERT_NO_THROW(interface_ = std::make_unique<XSFileInterface>(nuclide_));
+      }
+
+      void TearDown() override {
+        if (has_original_)
+        {
+          #ifdef _WIN32
+            _putenv_s(charmander_xs_.c_str(), old_env_var_.c_str());
+          #else
+            setenv(charmander_xs_.c_str(), old_env_var_.c_str(), 1);
+          #endif
+        } else {
+          #ifdef _WIN32
+            _putenv((charmander_xs_ + "=").c_str());
+          #else
+            unsetenv(charmander_xs_.c_str());
+          #endif
+        }
       }
   };
 
@@ -78,8 +116,8 @@ namespace charmander
 
   TEST_F(MaterialsXSFileInterface, ResolveFilePath) {
     std::filesystem::path expected_root = xs_path_;
-    std::filesystem::path expected = expected_root / "U235.h5";
-    EXPECT_EQ(expected, interface_->ResolveFilePath("U235"));
+    std::filesystem::path expected = expected_root / "FakeU235.h5";
+    EXPECT_EQ(expected, interface_->ResolveFilePath("FakeU235"));
     EXPECT_THROW(interface_->ResolveFilePath("u235"), std::runtime_error);
   }
 
@@ -111,11 +149,15 @@ namespace charmander
       ASSERT_GE(energies.at(i+1), energies.at(i));
     }
 
+    // invalid dataset path
     EXPECT_THROW(interface_->LoadEvaluationEnergies("293K", energies), std::runtime_error);
+    // invalid formatted dataset (char instead of float in this case)
+    XSFileInterface bad_file("BadFakeU235");
+    EXPECT_THROW(bad_file.LoadEvaluationEnergies("294K", energies), std::runtime_error);
   }
 
   TEST_F(MaterialsXSFileInterface, GetEnergyPath) {
-    std::string expected = "/U235/energy/294K";
+    std::string expected = "/FakeU235/energy/294K";
     EXPECT_EQ(expected, interface_->GetEnergyPath("294K"));
   }
 
@@ -137,8 +179,13 @@ namespace charmander
     EXPECT_FALSE(xs.empty());
     EXPECT_EQ(xs.size(), energies.size());
 
+    // wrong target size
     EXPECT_THROW(interface_->Load1DXSDataset("002", "294K", xs, 0), std::runtime_error);
+    // invalid dataset path
     EXPECT_THROW(interface_->Load1DXSDataset("not", "real", xs, energies.size()), std::runtime_error);
+    // invalid formatted dataset (char instead of float in this case)
+    XSFileInterface bad_file("BadFakeU235");
+    EXPECT_THROW(bad_file.Load1DXSDataset("002", "294K", xs, energies.size()), std::runtime_error);
   }
 
   TEST_F(MaterialsXSFileInterface, LeftPadLoad1DXSDataset) {
@@ -158,12 +205,17 @@ namespace charmander
       ASSERT_DOUBLE_EQ(xs_padded.at(i+1), xs_real.at(i));
     }
     
+    // wrong target size
     EXPECT_THROW(interface_->LeftPadLoad1DXSDataset("002", "294K", xs_padded, energies.size() - 1), std::runtime_error);
-    EXPECT_THROW(interface_->LeftPadLoad1DXSDataset("not", "real", xs_padded, energies.size()), std::runtime_error);
+    // invalid dataset path
+    EXPECT_THROW(interface_->LeftPadLoad1DXSDataset("not", "real", xs_padded, energies.size() + 1), std::runtime_error);
+    // invalid formatted dataset (char instead of float in this case)
+    XSFileInterface bad_file("BadFakeU235");
+    EXPECT_THROW(bad_file.LeftPadLoad1DXSDataset("002", "294K", xs_padded, energies.size() + 1), std::runtime_error);
   }
 
   TEST_F(MaterialsXSFileInterface, Get1DXSDataPath) {
-    std::string expected = "/U235/reactions/reaction_002/294K/xs";
+    std::string expected = "/FakeU235/reactions/reaction_002/294K/xs";
     EXPECT_EQ(expected, interface_->Get1DXSDataPath("002", "294K"));
   }
 } // namespace charmander
