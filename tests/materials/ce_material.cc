@@ -3,6 +3,7 @@
 #include "materials/ce_material.h"
 #include "materials/nuclide.h"
 
+#include <memory>
 #include <vector>
 #include <stdexcept>
 

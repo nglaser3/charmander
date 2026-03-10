@@ -1,6 +1,7 @@
 #ifndef CHARMANDER_MATERIALS_CE_MATERIAL_H_
 #define CHARMANDER_MATERIALS_CE_MATERIAL_H_
 
+#include <memory>
 #include <vector>
 
 #include "materials/nuclide.h"
