@@ -9,7 +9,7 @@ namespace charmander
 {
 
   struct NuclideData {
-    Nuclide nuc;
+    std::shared_ptr<const Nuclide> nuc; 
     double atom_percent;
   };
 
