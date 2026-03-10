@@ -1,4 +1,5 @@
 #include "materials/xs_file_interface.h"
+#include "env_wrapper.h"
 
 #include <gtest/gtest.h>
 #include <hdf5.h>
@@ -49,58 +50,26 @@ TEST(XSFileInterfaceEnvVar, EnvVarNotFound) {
 
 // fixture so we dont have to write the path grab and init a bunch
 // also want all tests to fail if the env var is not found.
-class MaterialsXSFileInterface : public ::testing::Test {
+class MaterialsXSFileInterface : public test_helpers::CharmanderXSEnvWrapper, public ::testing::Test {
  protected:
   std::string xs_path_;
-  std::string nuclide_;
   std::unique_ptr<XSFileInterface> interface_;
-  std::string test_xs_dir_;
-  bool has_original_{false};
-  std::string old_env_var_;
-  std::string charmander_xs_{"CHARMANDER_CROSS_SECTIONS"};
 
   void SetUp() override {
     // tell hdf5 to be quiet, it has ugly error output that pollutes test output
     H5Eset_auto(H5E_DEFAULT, nullptr, nullptr);
 
-    const char* var = std::getenv(charmander_xs_.c_str());
-    if (var) {
-      has_original_ = true;
-      old_env_var_ = var;
-    }
-
-    // defined in test level cmake, avoids having to determine path at runtim
-    std::filesystem::path test_xs_root = CHARMANDER_TEST_DATA_DIR;
-    test_xs_dir_ = (test_xs_root / "fake_cross_sections").string();
-
-#ifdef _WIN32
-    _putenv_s(charmander_xs_.c_str(), test_xs_dir_.c_str());
-#else
-    setenv(charmander_xs_.c_str(), test_xs_dir_.c_str(), 1);
-#endif
+    overwrite();
 
     const char* gotten = std::getenv(charmander_xs_.c_str());
     ASSERT_EQ(std::string(gotten), test_xs_dir_);
     xs_path_ = gotten;
 
-    nuclide_ = "FakeU235";
     ASSERT_NO_THROW(interface_ = std::make_unique<XSFileInterface>(nuclide_));
   }
 
   void TearDown() override {
-    if (has_original_) {
-#ifdef _WIN32
-      _putenv_s(charmander_xs_.c_str(), old_env_var_.c_str());
-#else
-      setenv(charmander_xs_.c_str(), old_env_var_.c_str(), 1);
-#endif
-    } else {
-#ifdef _WIN32
-      _putenv((charmander_xs_ + "=").c_str());
-#else
-      unsetenv(charmander_xs_.c_str());
-#endif
-    }
+    reinstate();
   }
 };
 
