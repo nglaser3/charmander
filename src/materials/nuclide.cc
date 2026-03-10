@@ -8,6 +8,9 @@
 namespace charmander {
 
 void Nuclide::LoadFromFile() {
+  
+  if (AlreadyLoaded()) return;
+  
   // open xs file
   XSFileInterface xs_file(nuclide_name_);
 
@@ -26,6 +29,8 @@ void Nuclide::LoadFromFile() {
 
   // calculate the total xs from the above
   ConstructTotalXS();
+
+  loaded_ = true;
 };
 
 void Nuclide::ConstructTotalXS() {
