@@ -19,8 +19,6 @@ class Nuclide {
 
   void LoadFromFile();
 
-  void ConstructTotalXS(std::vector<float> total_xs) const;
-
   size_t GetLowerEnergyBin(double energy) const;
 
   double GetTotalXS(size_t energy_index, double energy) const;
@@ -28,6 +26,8 @@ class Nuclide {
   double GetXSFromMT(MT mt, size_t energy_index, double energy) const;
 
  private:
+  void ConstructTotalXS();
+
   std::string nuclide_name_;
   std::string temperature_ = "294K";
 

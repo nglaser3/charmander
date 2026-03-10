@@ -25,15 +25,16 @@ void Nuclide::LoadFromFile() {
                           evaluation_energies_.size());
 
   // calculate the total xs from the above
-  ConstructTotalXS(total_xs_);
+  ConstructTotalXS();
 };
 
-void Nuclide::ConstructTotalXS(std::vector<float> total_xs) const {
+void Nuclide::ConstructTotalXS() {
+  total_xs_.clear();
   size_t length = evaluation_energies_.size();
-  total_xs.resize(length);
+  total_xs_.resize(length);
   for (const auto& [mt, xs] : xs_map_) {
     for (size_t i = 0; i < length; ++i) {
-      total_xs[i] = xs[i];
+      total_xs_[i] = xs[i];
     }
   }
 };
