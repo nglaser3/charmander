@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   build:
-    uses: ./.github/workflows/base_ci.yml
+    uses: ./.github/workflows/build_and_test_base.yml
     with:
       runner: macos-latest
       preset: ci
