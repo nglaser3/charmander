@@ -30,6 +30,7 @@ set(CHARMANDER_CC_FILES
   geometry/surface.cc
   geometry/cylinder.cc
   geometry/plane.cc
+  materials/ce_material.cc
 )
 
 add_library(

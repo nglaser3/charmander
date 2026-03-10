@@ -16,14 +16,15 @@ namespace charmander
   class CEMaterial
   {
   public:
-    CEMaterial(int id, const std::vector<NuclideData>& nuclide_data) : id_(id), nuclides_(nuclide_data) {};
+    CEMaterial(const int id, const std::vector<NuclideData>& nuclide_data);
   
-    int GetID() const {return id_;};
+    const int GetID() const {return id_;}
+    const std::vector<NuclideData>& GetNuclides() const {return nuclides_;}
     double GetTotalXS(double energy) const;
     double GetXSFromMT(MT mt, double energy) const;
 
   private:
-    int id_;
+    const int id_;
     std::vector<NuclideData> nuclides_;
   };
   
