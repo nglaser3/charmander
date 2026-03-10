@@ -1,0 +1,33 @@
+name: base CI for build and test
+
+on:
+  workflow_call:
+    inputs:
+      runner:
+        required: true
+        type: string
+      preset:
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ${{ inputs.runner }}
+
+    steps:
+      - name: Checkout Charmander
+        uses: actions/checkout@v4
+
+      - name: Install HDF5 on Ubuntu
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libhdf5-dev
+
+      - name: Install HDF5 on macOS
+        if: runner.os == 'macOS'
+        run: |
+          brew install hdf5
+
+      - name: Configure CMake and Build
+        run: cmake --workflow --preset ${{ inputs.preset }}
