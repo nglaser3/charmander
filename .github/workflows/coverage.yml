@@ -19,6 +19,12 @@ jobs:
       - name: Checkout Charmander 
         uses: actions/checkout@v4
 
+      - name: Install External Dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libhdf5-dev
+
       - name: Install gcovr
         run: |
           python3 -m pip install --upgrade pip
