@@ -42,11 +42,10 @@ namespace charmander
 
   double
   CEMaterial::GetXSFromMT(MT mt, double energy) const {
-    size_t lower_energy = nuclides_.front().nuc->GetLowerEnergyBin(energy);
-
     float xs = 0.0f;
     for (const auto& nucdata : nuclides_)
     {
+      size_t lower_energy = nuclides_.front().nuc->GetLowerEnergyBin(energy);
       xs += nucdata.atom_percent * nucdata.nuc->GetXSFromMT(mt, lower_energy, energy);
     }
     return static_cast<double>(xs);
