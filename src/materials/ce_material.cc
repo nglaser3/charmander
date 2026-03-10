@@ -9,6 +9,11 @@
 namespace charmander
 {
   CEMaterial::CEMaterial(const int id, const std::vector<NuclideData>& nuclide_data) : id_(id), nuclides_(nuclide_data) {
+    if (nuclides_.empty())
+    {
+      throw std::runtime_error("no nuclides found for material " + std::to_string(id_));
+    }
+    
     double total_at_percent = 0.0;
     for (auto& nucdatum : nuclides_)
     {
@@ -26,24 +31,23 @@ namespace charmander
 
   double
   CEMaterial::GetTotalXS(double energy) const {
-    double lower_energy = nuclides_.front().nuc.GetLowerEnergyBin(energy);
-
     float total_xs = 0.0f;
-    for (auto nucdata : nuclides_)
+    for (const auto& nucdata : nuclides_)
     {
-      total_xs += nucdata.atom_percent * nucdata.nuc.GetTotalXS(lower_energy, energy);
+      size_t lower_energy = nuclides_.front().nuc->GetLowerEnergyBin(energy);
+      total_xs += nucdata.atom_percent * nucdata.nuc->GetTotalXS(lower_energy, energy);
     }
     return static_cast<double>(total_xs);
   }
 
   double
   CEMaterial::GetXSFromMT(MT mt, double energy) const {
-    double lower_energy = nuclides_.front().nuc.GetLowerEnergyBin(energy);
+    size_t lower_energy = nuclides_.front().nuc->GetLowerEnergyBin(energy);
 
     float xs = 0.0f;
-    for (auto nucdata : nuclides_)
+    for (const auto& nucdata : nuclides_)
     {
-      xs += nucdata.atom_percent * nucdata.nuc.GetXSFromMT(mt, lower_energy, energy);
+      xs += nucdata.atom_percent * nucdata.nuc->GetXSFromMT(mt, lower_energy, energy);
     }
     return static_cast<double>(xs);
   }
