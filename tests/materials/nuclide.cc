@@ -1,5 +1,4 @@
-#include <filesystem>
-
+#include "env_wrapper.h"
 #include "constants.h"
 #include "materials/nuclide.h"
 
@@ -7,49 +6,16 @@
 
 namespace charmander {
 
-class MaterialsNuclide : public ::testing::Test {
+class MaterialsNuclide : public test_helpers::CharmanderXSEnvWrapper, public ::testing::Test {
  protected:
-  std::string test_xs_dir_;
-  bool has_original_{false};
-  std::string old_env_var_;
-  std::string nuclide_{"FakeU235"};
-  std::string charmander_xs_{"CHARMANDER_CROSS_SECTIONS"};
-
   void SetUp() override {
-    const char* var = std::getenv(charmander_xs_.c_str());
-    if (var) {
-      has_original_ = true;
-      old_env_var_ = var;
-    }
-
-    // defined in test level cmake, avoids having to determine path at runtime
-    std::filesystem::path test_xs_root = CHARMANDER_TEST_DATA_DIR;
-    test_xs_dir_ = (test_xs_root / "fake_cross_sections").string();
-
-#ifdef _WIN32
-    _putenv_s(charmander_xs_.c_str(), test_xs_dir_.c_str());
-#else
-    setenv(charmander_xs_.c_str(), test_xs_dir_.c_str(), 1);
-#endif
-
+    overwrite();
     const char* gotten = std::getenv(charmander_xs_.c_str());
     ASSERT_EQ(std::string(gotten), test_xs_dir_);
   }
 
   void TearDown() override {
-    if (has_original_) {
-#ifdef _WIN32
-      _putenv_s(charmander_xs_.c_str(), old_env_var_.c_str());
-#else
-      setenv(charmander_xs_.c_str(), old_env_var_.c_str(), 1);
-#endif
-    } else {
-#ifdef _WIN32
-      _putenv((charmander_xs_ + "=").c_str());
-#else
-      unsetenv(charmander_xs_.c_str());
-#endif
-    }
+    reinstate();
   }
 };
 
