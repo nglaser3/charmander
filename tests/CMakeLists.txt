@@ -39,7 +39,7 @@ add_executable(
   charmander_tests ${TEST_CC_FILES}
 )
 target_include_directories(
-  charmander_tests PRIVATE ${CHARMANDER_INCLUDE_DIR} ${HDF5_INCLUDE_DIRS} 
+  charmander_tests PRIVATE ${CHARMANDER_INCLUDE_DIR} ${HDF5_INCLUDE_DIRS} ${CHARMANDER_TEST_DIR}/test_helpers
 )
 target_compile_definitions(
   charmander_tests PRIVATE
