@@ -9,11 +9,22 @@
 namespace charmander
 {
   CEMaterial::CEMaterial(const int id, const std::vector<NuclideData>& nuclide_data) : id_(id), nuclides_(nuclide_data) {
+    // enforce not empty
     if (nuclides_.empty())
     {
       throw std::runtime_error("no nuclides found for material " + std::to_string(id_));
     }
+
+    // enforce loaded nuclides
+    for (auto& nucdatum : nuclides_)
+    {
+      if (!nucdatum.nuc->AlreadyLoaded())
+      {
+        throw std::runtime_error("non-loaded nuclides detected for material " + std::to_string(id_));
+      }
+    }
     
+    // normalize
     double total_at_percent = 0.0;
     for (auto& nucdatum : nuclides_)
     {
