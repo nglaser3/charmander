@@ -18,6 +18,8 @@ class Nuclide {
   Nuclide(std::string nuclide) : nuclide_name_(nuclide){};
 
   void LoadFromFile();
+  
+  bool AlreadyLoaded() const {return loaded_;}
 
   size_t GetLowerEnergyBin(double energy) const;
 
@@ -35,6 +37,8 @@ class Nuclide {
 
   std::vector<float> total_xs_;
   std::unordered_map<MT, std::vector<float>> xs_map_;
+
+  bool loaded_{false};
 };
 
 }  // namespace charmander

@@ -23,7 +23,9 @@ TEST_F(MaterialsNuclide, Constructor) { EXPECT_NO_THROW(Nuclide nuc(nuclide_)); 
 
 TEST_F(MaterialsNuclide, LoadFromFile) {
   Nuclide nuc(nuclide_);
+  EXPECT_FALSE(nuc.AlreadyLoaded());
   EXPECT_NO_THROW(nuc.LoadFromFile());
+  EXPECT_TRUE(nuc.AlreadyLoaded());
 }
 
 TEST_F(MaterialsNuclide, GetLowerEnergyBin) {
