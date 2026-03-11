@@ -48,6 +48,10 @@ TEST_F(MaterialsCEMaterial, CEMaterialConstructor) {
 
   std::vector<NuclideData> nucdata_none;
   EXPECT_THROW(CEMaterial(1, nucdata_none), std::runtime_error);
+
+  std::shared_ptr<Nuclide> nl_nuc = std::make_shared<Nuclide>("U235");
+  NuclideData nucdatum_nl{nl_nuc, 1.0};
+  EXPECT_THROW(CEMaterial(1, {nucdatum_nl}), std::runtime_error);
 }
 
 TEST_F(MaterialsCEMaterial, CEMaterialGetTotalXS) {
