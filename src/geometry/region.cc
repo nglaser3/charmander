@@ -9,10 +9,13 @@ namespace charmander
 {
   Region::Region(std::vector<std::vector<Halfspace>> clauses): clauses_(std::move(clauses)) {
 
-    if (clauses_.empty()) throw std::runtime_error("empty clauses vector");
-    
+    if (clauses_.empty()) {
+      throw std::runtime_error("empty clauses vector");
+    }
     for (auto& clause : clauses_) {
-      if (clause.empty()) throw std::runtime_error("empty halfspace vector");
+      if (clause.empty()) {
+        throw std::runtime_error("empty halfspace vector");
+      }
     }
   }
 
