@@ -30,6 +30,7 @@ set(CHARMANDER_CC_FILES
   geometry/surface.cc
   geometry/cylinder.cc
   geometry/plane.cc
+  geometry/region.cc
   materials/ce_material.cc
 )
 
