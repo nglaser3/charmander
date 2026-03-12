@@ -12,8 +12,7 @@ namespace charmander
 {
   TEST(Halfspace, Constructor) {
     // non initialized ptr 
-    Surface* null_s;
-    EXPECT_THROW(Halfspace(null_s, false), std::runtime_error);
+    EXPECT_THROW(Halfspace(nullptr, false), std::runtime_error);
 
     Cylinder cyl(1.0, {1, 0, 0}, {0.0, 0.0, 0.0});
     Halfspace* hs;
