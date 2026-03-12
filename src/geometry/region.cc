@@ -11,7 +11,7 @@ namespace charmander
 
     if (clauses_.empty()) throw std::runtime_error("empty clauses vector");
     
-    for (auto& clause : clauses) {
+    for (auto& clause : clauses_) {
       if (clause.empty()) throw std::runtime_error("empty halfspace vector");
     }
   }
@@ -31,12 +31,21 @@ namespace charmander
     return false;
   }
 
-  double Region::Distance(const Point& p, const Direction& d) const {
+  double Region::Distance(const Point& p, const Direction& d) const
+  {
+    const bool start_in = Contains(p);
     double min_dist = INF;
-    for (const auto& clause : clauses_) {
-      for (const auto& hs : clause) {
-        double dist = hs.GetSurface().Distance(p, d);
-        if (dist < min_dist) min_dist = dist;
+    for (const auto& clause : clauses_)
+    {
+      for (const auto& hs : clause)
+      {
+        const double dist = hs.GetSurface().Distance(p, d);
+        // dont care
+        if (dist >= min_dist) continue;
+        // check if we end in the region or not
+        const bool end_in = Contains(p + (dist + COINCIDENT_SURF) * d);
+        // if start in want end in false (exit) if start out want end in (entry)
+        if (end_in != start_in) min_dist = dist;
       }
     }
     return min_dist;
