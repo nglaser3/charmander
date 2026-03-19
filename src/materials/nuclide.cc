@@ -74,6 +74,10 @@ double Nuclide::GetTotalXS(const size_t energy_index,
 
 double Nuclide::GetXSFromMT(MT mt, const size_t energy_index,
                             const double energy) const {
+  if (!xs_map_.containts(mt))
+  {
+    return 0.0;
+  } 
   const float* xs = xs_map_.at(mt).data();
   if (energy <= evaluation_energies_.front()) return xs[0];
   if (energy >= evaluation_energies_.back())
