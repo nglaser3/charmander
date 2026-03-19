@@ -14,9 +14,9 @@ namespace charmander {
 // ----------------------------------------------------------------------------
 
 struct Point {
-  const double x;
-  const double y;
-  const double z;
+  double x;
+  double y;
+  double z;
 
   Point(double _x, double _y, double _z) : x(_x), y(_y), z(_z) {}
 };
@@ -51,6 +51,12 @@ inline Point operator-(const Point& a, const Point& b) {
 
 inline Point operator+(const Point& p, const Direction& d) {
   return Point(p.x + d.x, p.y + d.y, p.z + d.z);
+}
+
+inline Point operator+=(Point& p, const Direction& d) {
+  p.x += d.x;
+  p.y += d.y;
+  p.z += d.z;
 }
 
 inline Point operator-(const Point& p, const Direction& d) {

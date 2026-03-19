@@ -59,6 +59,8 @@ TEST(BasicTypes, PointDirectionAddition) {
   Direction d(1.0, 1.0, 1.0);
 
   EXPECT_EQ(p + d, Point(2.0, 2.0, 2.0));
+  p += d;
+  EXPECT_EQ(p, Point(2.0, 2.0, 2.0));
 }
 
 TEST(BasicTypes, PointDirectionSubtraction) {
