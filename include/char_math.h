@@ -2,12 +2,11 @@
 #define CHARMANDER_MATH_H_
 
 #include <cmath>
+#include <cstdint>
 #include "basic_types.h"
 
 namespace charmander
 {
-  int RNG_SEED = 1;
-
   class LinearCongruentialGenerator {
     public: 
       LinearCongruentialGenerator(uint64_t seed): seed_(seed) {}
