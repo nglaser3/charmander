@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <cmath>
+#include <memory>
 
 #include "env_wrapper.h"
 
@@ -20,8 +21,8 @@ class GeometryGeometry : public test_helpers::CharmanderXSEnvWrapper, public ::t
   std::shared_ptr<Cell> cell2_;
   std::shared_ptr<Nuclide> nuc_obj;
   // something goofy... idk segfaults otherwise if its defined in setup
-  ZCylinder cyl1 = ZCylinder(1.0, {0.0, 0.0, 0.0});
-  ZCylinder cyl2 = ZCylinder(2.0, {0.0, 0.0, 0.0});
+  std::shared_ptr<ZCylinder> cyl1_ = std::make_shared<ZCylinder>(1.0, Point{0.0, 0.0, 0.0});
+  std::shared_ptr<ZCylinder> cyl2_ = std::make_shared<ZCylinder>(2.0, Point{0.0, 0.0, 0.0});
 
   void SetUp() override {
     overwrite();
@@ -32,8 +33,8 @@ class GeometryGeometry : public test_helpers::CharmanderXSEnvWrapper, public ::t
     nuc_obj->LoadFromFile();
     CEMaterial mat(1, {{nuc_obj, 1.0}});
 
-    Region region1({{-cyl1}});
-    Region region2 = +cyl1 & -cyl2;
+    Region region1({{-cyl1_}});
+    Region region2 = +cyl1_ & -cyl2_;
     cell1_ = std::make_shared<Cell>(1, mat, region1);
     cell2_ = std::make_shared<Cell>(2, mat, region2);
   }
