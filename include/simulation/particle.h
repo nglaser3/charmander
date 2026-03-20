@@ -11,6 +11,7 @@ namespace charmander
     Direction direction;
     double energy;
     double weight = 1.0;
+    bool alive=true;
   };
   
 } // namespace charmander

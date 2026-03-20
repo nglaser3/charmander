@@ -26,9 +26,9 @@ struct Point {
 // ----------------------------------------------------------------------------
 
 struct Direction {
-  const double x;
-  const double y;
-  const double z;
+  double x;
+  double y;
+  double z;
   Direction(double _x, double _y, double _z) : x(_x), y(_y), z(_z) {}
   Direction(Point p) : x(p.x), y(p.y), z(p.z) {}
 };
@@ -108,6 +108,10 @@ inline bool fuzzyequal(const Direction& a, const Direction& b) {
   return (a.x - b.x < FP_TOLERANCE) && (a.y - b.y < FP_TOLERANCE) && (a.z - b.z < FP_TOLERANCE);
 }
 
+// ----------------------------------------------------------------------------
+// Comparisons 
+// ----------------------------------------------------------------------------
+const Point INF_POINT{INF, INF, INF};
 }  // namespace charmander
 
 #endif  // CHARMANDER_BASIC_TYPES_H_
