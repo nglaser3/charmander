@@ -33,6 +33,31 @@ namespace charmander
   inline double SampleMFP(LinearCongruentialGenerator lcg) {
     return -std::log( lcg() );
   }
+
+  inline double LegendreP(size_t order, double energy) {
+
+    switch (order)
+    {
+    case 0:
+      return 1.0;
+      break;
+    case 1:
+      return energy;
+      break;
+    default:
+      double p_nm1 = 1.0;
+      double p_n = energy;
+      for (size_t n = 1; n < order; ++n)
+      {
+          double p_np1 = ((2.0 * n + 1.0) * energy * p_n - n * p_nm1) / (n + 1.0);
+          p_nm1 = p_n;
+          p_n = p_np1;
+      }
+
+      return p_n;
+      break;
+    }
+  }
 } // namespace charmander
 
 

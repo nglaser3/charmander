@@ -27,7 +27,9 @@ namespace charmander
       for (const auto& mt_rxn : {MT(-1), MT(2), MT(4), MT(18), MT(102)})
       {
         tallies_[mt_rxn].resize(settings.batches);
+        errors_[mt_rxn].resize(settings.batches);
       }
+      legendre_coeffs_.resize(21); //order 100
     };
   
     void Run();
@@ -35,14 +37,21 @@ namespace charmander
     bool TransportParticle(Particle& p, LinearCongruentialGenerator& lcg) const;
     MT CollideParticle(Particle& p, LinearCongruentialGenerator& lcg) const;
     void ScatterParticle(Particle& p, LinearCongruentialGenerator& lcg, double A) const;
+    void EnergyTally(const Particle& p);
     void TallyParticle(size_t batch, const Particle& p, MT reaction);
     void FinalizeTallies();
+    void WriteOutTallies();
+    void WriteOutCollisions();
+    void WriteOutLegendre();
 
   private: 
     const Geometry geom_;
     const Settings settings_;
 
     std::map<MT, std::vector<double>> tallies_;
+    std::map<MT, std::vector<double>> errors_;
+
+    std::vector<double> legendre_coeffs_;
   };
   
 } // namespace charmander
