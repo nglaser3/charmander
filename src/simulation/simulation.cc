@@ -8,8 +8,8 @@
 
 namespace charmander
 {
-  void Simulation::Run() const {
-    for (int i = 0; i < settings_.batches; i++)
+  void Simulation::Run() {
+    for (size_t i = 0; i < settings_.batches; i++)
     {
       for (size_t j = 0; j < settings_.histories; j++)
       {
@@ -27,14 +27,19 @@ namespace charmander
         while (p.alive)
         {
           // update to next position, returns true if leaked
-          if (TransportParticle(p, lcg)) break;
-          
-          // check reaction
-          CollideParticle(p, lcg);
+          if (!TransportParticle(p, lcg)) {
+            // check reaction
+            MT rxn = CollideParticle(p, lcg);
+            // tally interaction
+            TallyParticle(i, p, rxn);
+          } else {
+            TallyParticle(i, p, MT::MISSED);
+            break;
+          }
         }
-        
       }
     }
+    FinalizeTallies();
   }
 
   bool Simulation::TransportParticle(Particle& p, LinearCongruentialGenerator& lcg) const {
@@ -42,25 +47,57 @@ namespace charmander
     return p.position == INF_POINT;
   }
 
-  void Simulation::CollideParticle(Particle& p, LinearCongruentialGenerator& lcg) const {
+  MT Simulation::CollideParticle(Particle& p, LinearCongruentialGenerator& lcg) const {
     auto [reaction, mass] = geom_.CollisionType(p.position, p.energy, lcg(), lcg());
     switch (reaction)
     {
     case MT::INELASTIC:
       // treat inelastic as elastic for now
-      _LIBCPP_FALLTHROUGH();
+      [[fallthrough]];
     case MT::ELASTIC:
-      p.direction = SampleDirection(lcg);
-      p.energy = p.energy * 0.5;
+      ScatterParticle(p, lcg, mass);
       break;
     case MT::FISSION:
-      _LIBCPP_FALLTHROUGH();
+      // treat fission as capture for now
+      [[fallthrough]];
     case MT::CAPTURE:
       p.alive = false;
       break;
     case MT::MISSED:
       p.alive = false;
       break;
+    }
+    return reaction;
+  }
+
+  void Simulation::ScatterParticle(Particle& p, LinearCongruentialGenerator& lcg, double A) const {
+    p.direction = SampleDirection(lcg);
+    double mu_cm = 2.0 * lcg() - 1.0;
+
+    double delta_e = (1.0 + A*A + 2.0*A*mu_cm) / ((1.0+A) * (1.0+A));
+    p.energy *= delta_e;
+  }
+
+  void Simulation::TallyParticle(size_t batch, const Particle& p, MT reaction) {
+    tallies_[reaction][batch] += p.weight;
+  }
+
+  void Simulation::FinalizeTallies() {
+    std::vector<double> total_weight(settings_.batches);
+    for (auto& [mt, result] : tallies_)
+    {
+      for (auto i = 0; i < settings_.batches; i++)
+      {
+        total_weight[i] += result[i];
+      }
+    }
+    for (auto& [mt, result] : tallies_)
+    {
+      for (auto i = 0; i < settings_.batches; i++)
+      {
+        if (total_weight[i] > 0.0)
+          result[i] /= total_weight[i];
+      }
     }
   }
 } // namespace charmander
