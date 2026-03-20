@@ -72,7 +72,7 @@ TEST_F(MaterialsNuclide, GetXSFromMT) {
   size_t under_energy = nuc.GetLowerEnergyBin(-1.0);
   EXPECT_DOUBLE_EQ(nuc.GetXSFromMT(MT::ELASTIC, under_energy, -1.0), 1.0);
   EXPECT_DOUBLE_EQ(nuc.GetXSFromMT(MT::INELASTIC, under_energy, -1.0), 1.0);
-  EXPECT_DOUBLE_EQ(nuc.GetXSFromMT(MT::CAPTURE, under_energy, -1.0), 1.0);
+  EXPECT_DOUBLE_EQ(nuc.GetXSFromMT(MT::FISSION, under_energy, -1.0), 1.0);
   EXPECT_DOUBLE_EQ(nuc.GetXSFromMT(MT::CAPTURE, under_energy, -1.0), 1.0);
 
   // expect 1.5 from linear interpolation
@@ -84,6 +84,6 @@ TEST_F(MaterialsNuclide, GetXSFromMT) {
   EXPECT_DOUBLE_EQ(nuc.GetXSFromMT(MT::ELASTIC, over_energy, 2.5), 3.0);
 
   // bad mt type, expect exactly 0.0
-  EXPECT_EQ(nuc.GetXSFromMT(MT::FISSION, norm_energy, 0.5), 0.0);
+  EXPECT_EQ(nuc.GetXSFromMT(MT::MISSED, norm_energy, 0.5), 0.0);
 }
 }  // namespace charmander
