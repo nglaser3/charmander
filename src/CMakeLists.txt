@@ -26,6 +26,7 @@ target_include_directories(
 # Configure main Charmander library
 # --------------------------------------------------------------------------- #
 set(CHARMANDER_CC_FILES
+  simulation/simulation.cc
   geometry/geometry.cc
   geometry/surface.cc
   geometry/cylinder.cc
