@@ -1,3 +1,6 @@
+#include <iostream>
+#include <string> 
+
 #include "basic_types.h"
 #include "constants.h"
 #include "char_math.h"
@@ -9,6 +12,8 @@
 namespace charmander
 {
   void Simulation::Run() {
+    std::string header(80, '=');
+    std::cout<<std::endl<<header<<std::endl<<"Beginning Simulation"<<std::endl<<header<<std::endl;
     for (size_t i = 0; i < settings_.batches; i++)
     {
       for (size_t j = 0; j < settings_.histories; j++)

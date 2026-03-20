@@ -2,6 +2,7 @@
 #define CHARMANDER_GEOMETRY_REGION_H_
 
 #include <utility>
+#include <memory>
 #include <stdexcept>
 #include <vector>
 
@@ -13,7 +14,7 @@ namespace charmander
   class Halfspace
   {
     public:
-      Halfspace(const Surface* surface, bool positive): surface_(surface), positive_(positive) {
+      Halfspace(std::shared_ptr<const Surface> surface, bool positive): surface_(surface), positive_(positive) {
         if (!surface_) throw std::runtime_error("surface not initialized");
       }
 
@@ -26,7 +27,7 @@ namespace charmander
       Halfspace operator~() const {return Halfspace(surface_, !positive_);}
 
     private:
-      const Surface* surface_;
+      std::shared_ptr<const Surface> surface_;
       bool positive_;
   };
 
@@ -46,12 +47,12 @@ namespace charmander
   };
 
   // operator overloads
-  inline Halfspace operator+(const Surface& surface) {
-    return Halfspace(&surface, true);
+  inline Halfspace operator+(std::shared_ptr<const Surface> surface) {
+    return Halfspace(surface, true);
   }
 
-  inline Halfspace operator-(const Surface& surface) {
-    return Halfspace(&surface, false);
+  inline Halfspace operator-(std::shared_ptr<const Surface> surface) {
+    return Halfspace(surface, false);
   }
 
   inline Region operator&(const Halfspace& lhs, const Halfspace& rhs) {
