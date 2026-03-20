@@ -53,7 +53,7 @@ inline Point operator+(const Point& p, const Direction& d) {
   return Point(p.x + d.x, p.y + d.y, p.z + d.z);
 }
 
-inline Point operator+=(Point& p, const Direction& d) {
+inline void operator+=(Point& p, const Direction& d) {
   p.x += d.x;
   p.y += d.y;
   p.z += d.z;
