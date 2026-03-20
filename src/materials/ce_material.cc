@@ -70,7 +70,7 @@ namespace charmander
     {
       r1 -= nuc_datum.nuc->GetTotalXS(lower_energy, energy);
       if (r1 <= 0.0) {
-        return nuc_datum.nuc->SampleReaction();
+        return nuc_datum.nuc->SampleReaction(lower_energy, energy, r2);
         break;
       }
     }
