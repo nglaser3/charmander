@@ -48,14 +48,14 @@ namespace charmander
     }, 1.0);
 
     // geometry
-    auto inner = std::make_shared<ZCylinder>(0.1, Point{0.0, 0.0, 0.0});
-    auto outer = std::make_shared<ZCylinder>(1.0, Point{0.0, 0.0, 0.0});
-    auto top = std::make_shared<ZPlane>(10.0);
-    auto bottom = std::make_shared<ZPlane>(-10.0);
-    auto right = std::make_shared<XPlane>(2.0);
-    auto left = std::make_shared<XPlane>(-2.0);
-    auto back = std::make_shared<YPlane>(2.0);
-    auto front = std::make_shared<YPlane>(-2.0);
+    auto inner = std::make_shared<ZCylinder>(10.0, Point{0.0, 0.0, 0.0});
+    auto outer = std::make_shared<ZCylinder>(50.0, Point{0.0, 0.0, 0.0});
+    auto top = std::make_shared<ZPlane>(1000.0);
+    auto bottom = std::make_shared<ZPlane>(-1000.0);
+    auto right = std::make_shared<XPlane>(100.0);
+    auto left = std::make_shared<XPlane>(-100.0);
+    auto back = std::make_shared<YPlane>(100.0);
+    auto front = std::make_shared<YPlane>(-100.0);
 
     Region top_bottom = +bottom & -top;
     Region bbox = +left & -right & +front & -back;
@@ -65,10 +65,10 @@ namespace charmander
     Geometry geom({inwater, fuel, outwater});
 
     // settings
-    Source source{{0.0, 0.0, 0.0}, 1e7};
+    Source source{{0.0, 0.0, 0.0}, 1e6};
     Settings settings = {
       source,
-      1000,
+      10000,
       100
     };
 
