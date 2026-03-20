@@ -93,4 +93,15 @@ double Nuclide::GetXSFromMT(MT mt, const size_t energy_index,
 
   return XS_low + (XS_high - XS_low) * (energy - E_low) / (E_high - E_low);
 }
+
+MT Nuclide::SampleReaction(const size_t energy_index, const double energy, double random) const {
+  double total_xs = GetTotalXS(energy_index, energy);
+  if (total_xs <= 0.0) return MT::MISSED;
+  for (const auto& [mt_rxn, _] : xs_map_)
+  {
+    random -= (GetXSFromMT(mt_rxn, energy_index, energy) / total_xs);
+    if (random <= 0.0) return mt_rxn;
+  }
+  return MT::MISSED;
+}
 }  // namespace charmander

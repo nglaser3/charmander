@@ -43,9 +43,9 @@ namespace charmander
   double
   CEMaterial::GetTotalXS(double energy) const {
     float total_xs = 0.0f;
+    size_t lower_energy = nuclides_.front().nuc->GetLowerEnergyBin(energy);
     for (const auto& nucdata : nuclides_)
     {
-      size_t lower_energy = nuclides_.front().nuc->GetLowerEnergyBin(energy);
       total_xs += nucdata.atom_percent * nucdata.nuc->GetTotalXS(lower_energy, energy);
     }
     return static_cast<double>(total_xs);
@@ -60,5 +60,20 @@ namespace charmander
       xs += nucdata.atom_percent * nucdata.nuc->GetXSFromMT(mt, lower_energy, energy);
     }
     return static_cast<double>(xs);
+  }
+
+  MT
+  CEMaterial::SampleReaction(double energy, double r1, double r2) const {
+    r1 *= GetTotalXS(energy);
+    size_t lower_energy = nuclides_.front().nuc->GetLowerEnergyBin(energy);
+    for (const auto& nuc_datum : nuclides_)
+    {
+      r1 -= nuc_datum.nuc->GetTotalXS(lower_energy, energy);
+      if (r1 <= 0.0) {
+        return nuc_datum.nuc->SampleReaction();
+        break;
+      }
+    }
+    return MT::MISSED;
   }
 } // namespace charmander
