@@ -4,6 +4,6 @@
 
 namespace charmander {
 
-TEST(Geometry, BasicConstructor) { EXPECT_NO_THROW(Geometry()); }
+TEST(Geometry, BasicConstructor) { EXPECT_NO_THROW(Geometry({})); }
 
 }  // namespace charmander
