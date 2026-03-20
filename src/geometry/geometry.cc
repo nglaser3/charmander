@@ -12,11 +12,15 @@ Point Geometry::NewPosition(const Point& p, const Direction& d, double mfp, cons
   {
     // get next distance to surface
     auto [distance, cell] = DistanceToNextSurface(new_p, d);
-    double total_xs = cell.TotalXS(energy);
+
     if (distance == INF) {
       new_p = {INF, INF, INF};
       mfp = 0.0;
-    } else if (mfp < distance * total_xs) {
+      break;
+    }
+
+    double total_xs = cell->TotalXS(energy);
+    if (mfp < distance * total_xs) {
       new_p += (mfp / total_xs) * d;
       mfp = 0.0;
     } else {
@@ -27,9 +31,9 @@ Point Geometry::NewPosition(const Point& p, const Direction& d, double mfp, cons
   return new_p;
 }
 
-inline std::pair<double, const Cell&> Geometry::DistanceToNextSurface(const Point& p, const Direction& d) const {
+std::pair<double, const Cell*> Geometry::DistanceToNextSurface(const Point& p, const Direction& d) const {
     double min_distance = INF;
-    const Cell* closest_cell = &cells_.front();
+    const Cell* closest_cell = nullptr;
     for (const auto& cell : cells_)
     {
       double dist_to_cell = cell.Distance(p, d);
@@ -38,7 +42,7 @@ inline std::pair<double, const Cell&> Geometry::DistanceToNextSurface(const Poin
         closest_cell = &cell;
       }
     }
-    return {min_distance, *closest_cell};
+    return {min_distance, closest_cell};
 }
 
 MT Geometry::CollisionType(const Point& p, const double energy, double r1, double r2) const {

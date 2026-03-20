@@ -16,7 +16,7 @@ class Geometry {
 
   Point NewPosition(const Point& p, const Direction& d, const double mfp, const double energy) const;
 
-  inline std::pair<double, const Cell&> DistanceToNextSurface(const Point& p, const Direction& d) const;
+  std::pair<double, const Cell*> DistanceToNextSurface(const Point& p, const Direction& d) const;
 
   MT CollisionType(const Point& p, const double energy, double r1, double r2) const;
 
