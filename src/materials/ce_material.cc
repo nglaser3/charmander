@@ -68,10 +68,9 @@ namespace charmander
     size_t lower_energy = nuclides_.front().nuc->GetLowerEnergyBin(energy);
     for (const auto& nuc_datum : nuclides_)
     {
-      r1 -= nuc_datum.nuc->GetTotalXS(lower_energy, energy);
+      r1 -= nuc_datum.atom_percent * nuc_datum.nuc->GetTotalXS(lower_energy, energy);
       if (r1 <= 0.0) {
         return nuc_datum.nuc->SampleReaction(lower_energy, energy, r2);
-        break;
       }
     }
     return MT::MISSED;

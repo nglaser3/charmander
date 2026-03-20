@@ -50,15 +50,15 @@ TEST_F(MaterialsNuclide, GetTotalXS) {
 
   // expect 1.0 (min) because we clip at boundaries
   size_t under_energy = nuc.GetLowerEnergyBin(-1.0);
-  EXPECT_DOUBLE_EQ(nuc.GetTotalXS(under_energy, -1.0), 1.0);
+  EXPECT_DOUBLE_EQ(nuc.GetTotalXS(under_energy, -1.0), 4.0);
 
   // expect 1.5 from linear interpolation
   size_t norm_energy = nuc.GetLowerEnergyBin(0.5);
-  EXPECT_DOUBLE_EQ(nuc.GetTotalXS(norm_energy, 0.5), 1.5);
+  EXPECT_DOUBLE_EQ(nuc.GetTotalXS(norm_energy, 0.5), 6.0);
 
   // expect 3.0 (max) because we clip at boundaries
   size_t over_energy = nuc.GetLowerEnergyBin(2.5);
-  EXPECT_DOUBLE_EQ(nuc.GetTotalXS(over_energy, 2.5), 3.0);
+  EXPECT_DOUBLE_EQ(nuc.GetTotalXS(over_energy, 2.5), 12.0);
 }
 
 TEST_F(MaterialsNuclide, GetXSFromMT) {

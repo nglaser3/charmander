@@ -39,7 +39,7 @@ void Nuclide::ConstructTotalXS() {
   total_xs_.resize(length);
   for (const auto& [mt, xs] : xs_map_) {
     for (size_t i = 0; i < length; ++i) {
-      total_xs_[i] = xs[i];
+      total_xs_[i] += xs[i];
     }
   }
 };
