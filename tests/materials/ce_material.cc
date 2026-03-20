@@ -67,11 +67,11 @@ TEST_F(MaterialsCEMaterial, CEMaterialGetTotalXS) {
   // energies are 0, 1, 2
   // total xs is 1, 2, 3
   // under clip
-  EXPECT_DOUBLE_EQ(mat.GetTotalXS(-0.5), 1.0);
-  EXPECT_DOUBLE_EQ(mat.GetTotalXS(0.0), 1.0);
-  EXPECT_DOUBLE_EQ(mat.GetTotalXS(0.5), 1.5);
+  EXPECT_DOUBLE_EQ(mat.GetTotalXS(-0.5), 4.0);
+  EXPECT_DOUBLE_EQ(mat.GetTotalXS(0.0), 4.0);
+  EXPECT_DOUBLE_EQ(mat.GetTotalXS(0.5), 6.0);
   // // over clip
-  EXPECT_DOUBLE_EQ(mat.GetTotalXS(3.0), 3.0);
+  EXPECT_DOUBLE_EQ(mat.GetTotalXS(3.0), 12.0);
 }
 
 TEST_F(MaterialsCEMaterial, CEMaterialGetXSFromMT) {

@@ -39,7 +39,7 @@ void Nuclide::ConstructTotalXS() {
   total_xs_.resize(length);
   for (const auto& [mt, xs] : xs_map_) {
     for (size_t i = 0; i < length; ++i) {
-      total_xs_[i] = xs[i];
+      total_xs_[i] += xs[i];
     }
   }
 };
@@ -74,6 +74,10 @@ double Nuclide::GetTotalXS(const size_t energy_index,
 
 double Nuclide::GetXSFromMT(MT mt, const size_t energy_index,
                             const double energy) const {
+  if (!xs_map_.contains(mt))
+  {
+    return 0.0;
+  } 
   const float* xs = xs_map_.at(mt).data();
   if (energy <= evaluation_energies_.front()) return xs[0];
   if (energy >= evaluation_energies_.back())
@@ -88,5 +92,16 @@ double Nuclide::GetXSFromMT(MT mt, const size_t energy_index,
   double XS_high = xs[energy_index + 1];
 
   return XS_low + (XS_high - XS_low) * (energy - E_low) / (E_high - E_low);
+}
+
+MT Nuclide::SampleReaction(const size_t energy_index, const double energy, double random) const {
+  double total_xs = GetTotalXS(energy_index, energy);
+  if (total_xs <= 0.0) return MT::MISSED;
+  for (const auto& mt_rxn : {MT(2), MT(4), MT(18), MT(102)})
+  {
+    random -= (GetXSFromMT(mt_rxn, energy_index, energy) / total_xs);
+    if (random <= 0.0) return mt_rxn;
+  }
+  return MT::MISSED;
 }
 }  // namespace charmander

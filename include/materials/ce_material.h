@@ -23,6 +23,7 @@ namespace charmander
     const std::vector<NuclideData>& GetNuclides() const {return nuclides_;}
     double GetTotalXS(double energy) const;
     double GetXSFromMT(MT mt, double energy) const;
+    MT SampleReaction(double energy, double r1, double r2) const;
 
   private:
     const int id_;

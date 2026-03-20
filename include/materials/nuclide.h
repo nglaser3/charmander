@@ -7,6 +7,7 @@
 
 namespace charmander {
 enum MT {
+  MISSED = -1,
   ELASTIC = 2,
   INELASTIC = 4,
   FISSION = 18,
@@ -26,6 +27,8 @@ class Nuclide {
   double GetTotalXS(size_t energy_index, double energy) const;
 
   double GetXSFromMT(MT mt, size_t energy_index, double energy) const;
+
+  MT SampleReaction(const size_t energy_index, const double energy, double random) const;
 
  private:
   void ConstructTotalXS();
