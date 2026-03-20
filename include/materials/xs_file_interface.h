@@ -38,6 +38,7 @@ class XSFileInterface {
   std::string Get1DXSDataPath(const std::string& mt_rxn,
                               const std::string& temperature) const;
 
+  bool DatasetExists(const std::string& path) const;
  private:
   const std::string nuclide_;
   hid_t file_id_;

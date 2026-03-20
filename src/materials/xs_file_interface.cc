@@ -83,6 +83,7 @@ void XSFileInterface::Load1DXSDataset(const std::string& mt_rxn,
                                       std::vector<float>& xs,
                                       const size_t& target_size) const {
   std::string path = Get1DXSDataPath(mt_rxn, temperature);
+  if (!DatasetExists(path)) return;
   size_t size = Get1DDatasetSize(path);
   if (size != target_size) {
     throw std::runtime_error("XS data for MT " + mt_rxn + " has size " +
@@ -100,6 +101,7 @@ void XSFileInterface::LeftPadLoad1DXSDataset(const std::string& mt_rxn,
                                              std::vector<float>& xs,
                                              const size_t& target_size) const {
   std::string path = Get1DXSDataPath(mt_rxn, temperature);
+  if (!DatasetExists(path)) return;
   size_t size = Get1DDatasetSize(path);
   if (size > target_size) {
     throw std::runtime_error("Left pad specified for MT " + mt_rxn +
@@ -120,5 +122,25 @@ std::string XSFileInterface::Get1DXSDataPath(
     const std::string& mt_rxn, const std::string& temperature) const {
   return "/" + nuclide_ + "/reactions/reaction_" + mt_rxn + "/" + temperature +
          "/xs";
+}
+
+bool XSFileInterface::DatasetExists(const std::string& path) const
+{
+    H5E_auto2_t old_func;
+    void* old_client_data = nullptr;
+    H5Eget_auto2(H5E_DEFAULT, &old_func, &old_client_data);
+
+    // Temporarily suppress HDF5 automatic error printing
+    H5Eset_auto2(H5E_DEFAULT, nullptr, nullptr);
+
+    htri_t exists = H5Lexists(file_id_, path.c_str(), H5P_DEFAULT);
+
+    // Restore previous error handler
+    H5Eset_auto2(H5E_DEFAULT, old_func, old_client_data);
+
+    if (exists < 0)
+        return false;
+
+    return exists > 0;
 }
 }  // namespace charmander

@@ -18,14 +18,25 @@ void Nuclide::LoadFromFile() {
   xs_file.LoadEvaluationEnergies(temperature_, evaluation_energies_);
 
   // fill the xs
-  xs_file.Load1DXSDataset("002", temperature_, xs_map_[MT::ELASTIC],
+  std::vector<float> xs2;
+  xs_file.Load1DXSDataset("002", temperature_, xs2,
                           evaluation_energies_.size());
-  xs_file.LeftPadLoad1DXSDataset("004", temperature_, xs_map_[MT::INELASTIC],
+  if (!xs2.empty()) xs_map_[MT::ELASTIC] = std::move(xs2);
+
+  std::vector<float> xs4;
+  xs_file.LeftPadLoad1DXSDataset("004", temperature_, xs4,
                                  evaluation_energies_.size());
-  xs_file.Load1DXSDataset("018", temperature_, xs_map_[MT::FISSION],
+  if (!xs4.empty()) xs_map_[MT::INELASTIC] = std::move(xs4);
+
+  std::vector<float> xs18;
+  xs_file.Load1DXSDataset("018", temperature_, xs18,
                           evaluation_energies_.size());
-  xs_file.Load1DXSDataset("102", temperature_, xs_map_[MT::CAPTURE],
+  if (!xs18.empty()) xs_map_[MT::FISSION] = std::move(xs18);
+
+  std::vector<float> xs102;
+  xs_file.Load1DXSDataset("102", temperature_, xs102,
                           evaluation_energies_.size());
+  if (!xs102.empty()) xs_map_[MT::CAPTURE] = std::move(xs102);
 
   // calculate the total xs from the above
   ConstructTotalXS();

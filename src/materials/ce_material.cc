@@ -8,7 +8,7 @@
 
 namespace charmander
 {
-  CEMaterial::CEMaterial(const int id, const std::vector<NuclideData>& nuclide_data) : id_(id), nuclides_(nuclide_data) {
+  CEMaterial::CEMaterial(const int id, const std::vector<NuclideData>& nuclide_data, const double density) : id_(id), nuclides_(nuclide_data) {
     // enforce not empty
     if (nuclides_.empty())
     {
@@ -38,6 +38,13 @@ namespace charmander
     {
       nucdatum.atom_percent /= total_at_percent;
     }
+
+    // calc number density
+    double total_mass = 0.0;
+    for (const auto& nucdatum : nuclides_)
+        total_mass += nucdatum.atom_percent * nucdatum.mass;
+
+    number_density_ = density * AVOGADRO / total_mass;
   }
 
   double
@@ -46,7 +53,7 @@ namespace charmander
     size_t lower_energy = nuclides_.front().nuc->GetLowerEnergyBin(energy);
     for (const auto& nucdata : nuclides_)
     {
-      total_xs += nucdata.atom_percent * nucdata.nuc->GetTotalXS(lower_energy, energy);
+      total_xs += number_density_ * nucdata.atom_percent * nucdata.nuc->GetTotalXS(lower_energy, energy);
     }
     return static_cast<double>(total_xs);
   }
@@ -57,7 +64,7 @@ namespace charmander
     for (const auto& nucdata : nuclides_)
     {
       size_t lower_energy = nuclides_.front().nuc->GetLowerEnergyBin(energy);
-      xs += nucdata.atom_percent * nucdata.nuc->GetXSFromMT(mt, lower_energy, energy);
+      xs += number_density_ * nucdata.atom_percent * nucdata.nuc->GetXSFromMT(mt, lower_energy, energy);
     }
     return static_cast<double>(xs);
   }
@@ -68,7 +75,7 @@ namespace charmander
     size_t lower_energy = nuclides_.front().nuc->GetLowerEnergyBin(energy);
     for (const auto& nuc_datum : nuclides_)
     {
-      r1 -= nuc_datum.atom_percent * nuc_datum.nuc->GetTotalXS(lower_energy, energy);
+      r1 -= number_density_ * nuc_datum.atom_percent * nuc_datum.nuc->GetTotalXS(lower_energy, energy);
       if (r1 <= 0.0) {
         return {nuc_datum.nuc->SampleReaction(lower_energy, energy, r2), nuc_datum.mass};
       }

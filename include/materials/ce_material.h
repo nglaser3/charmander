@@ -19,7 +19,7 @@ namespace charmander
   class CEMaterial
   {
   public:
-    CEMaterial(const int id, const std::vector<NuclideData>& nuclide_data);
+    CEMaterial(const int id, const std::vector<NuclideData>& nuclide_data, const double density=1.0);
   
     const int GetID() const {return id_;}
     const std::vector<NuclideData>& GetNuclides() const {return nuclides_;}
@@ -29,6 +29,7 @@ namespace charmander
 
   private:
     const int id_;
+    double number_density_;
     std::vector<NuclideData> nuclides_;
   };
   
