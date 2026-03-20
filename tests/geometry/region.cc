@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <stdexcept>
+#include <memory>
 
 #include "basic_types.h"
 #include "constants.h"
@@ -14,11 +15,11 @@ namespace charmander
     // non initialized ptr 
     EXPECT_THROW(Halfspace(nullptr, false), std::runtime_error);
 
-    Cylinder cyl(1.0, {1, 0, 0}, {0.0, 0.0, 0.0});
+    auto cyl = std::make_shared<Cylinder>(1.0, Direction{1, 0, 0}, Point{0.0, 0.0, 0.0});
     Halfspace* hs;
-    EXPECT_NO_THROW(hs = new Halfspace(&cyl, true));
+    EXPECT_NO_THROW(hs = new Halfspace(cyl, true));
     // compares addresses, should be the same
-    EXPECT_EQ(&hs->GetSurface(), &cyl);
+    EXPECT_EQ(&hs->GetSurface(), cyl.get());
     // + operator overload
     EXPECT_NO_THROW(+cyl);
     // - operator overload
@@ -26,7 +27,7 @@ namespace charmander
   }
 
   TEST(Halfspace, Sense) {
-    Cylinder cyl(1.0, {1, 0, 0}, {0.0, 0.0, 0.0});
+    auto cyl = std::make_shared<Cylinder>(1.0, Direction{1, 0, 0}, Point{0.0, 0.0, 0.0});
     Point in(0.0, 0.0, 0.0);
     Point on(0.0, 1.0, 0.0);
     Point out(5.0, 5.0, 5.0);
@@ -42,7 +43,7 @@ namespace charmander
   }
 
   TEST(Halfspace, Complement) {
-    Cylinder cyl(1.0, {1, 0, 0}, {0.0, 0.0, 0.0});
+    auto cyl = std::make_shared<Cylinder>(1.0, Direction{1, 0, 0}, Point{0.0, 0.0, 0.0});
     Point in(0.0, 0.0, 0.0);
     Point out(5.0, 5.0, 5.0);
 
@@ -53,7 +54,7 @@ namespace charmander
   }
 
   TEST(Region, Constructor) {
-    Cylinder cyl(1.0, {1, 0, 0}, {0.0, 0.0, 0.0});
+    auto cyl = std::make_shared<Cylinder>(1.0, Direction{1, 0, 0}, Point{0.0, 0.0, 0.0});
 
     // missing or empty clauses
     EXPECT_THROW(Region({}), std::runtime_error);
@@ -63,13 +64,13 @@ namespace charmander
     EXPECT_NO_THROW(reg = new Region({{+cyl}}));
     EXPECT_EQ(reg->GetClauses().size(), 1);
     EXPECT_EQ(reg->GetClauses().front().size(), 1);
-    EXPECT_EQ(&(reg->GetClauses().front().front().GetSurface()),&cyl);
+    EXPECT_EQ(&(reg->GetClauses().front().front().GetSurface()), cyl.get());
   }
 
   TEST(Region, Contains) {
-    Cylinder cyl(1.0, {0, 0, 1}, {0.0, 0.0, 0.0});
-    ZPlane top(5.0);
-    ZPlane bottom(-5.0);
+    auto cyl = std::make_shared<Cylinder>(1.0, Direction{0, 0, 1}, Point{0.0, 0.0, 0.0});
+    auto top = std::make_shared<ZPlane>(5.0);
+    auto bottom = std::make_shared<ZPlane>(-5.0);
 
     Point in(0.0, 0.0, 0.0);
     Point on(1.0, 0.0, 5.0);
@@ -92,9 +93,9 @@ namespace charmander
   }
   
   TEST(Region, Distance) {
-    Cylinder cyl(1.0, {0, 0, 1}, {0.0, 0.0, 0.0});
-    ZPlane top(5.0);
-    ZPlane bottom(-5.0);
+    auto cyl = std::make_shared<Cylinder>(1.0, Direction{0, 0, 1}, Point{0.0, 0.0, 0.0});
+    auto top = std::make_shared<ZPlane>(5.0);
+    auto bottom = std::make_shared<ZPlane>(-5.0);
 
     Region inreg({{-cyl, -top, +bottom}});
     Region outreg({{+cyl}, {+top}, {-bottom}});
