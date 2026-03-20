@@ -45,11 +45,11 @@ std::pair<double, const Cell*> Geometry::DistanceToNextSurface(const Point& p, c
     return {min_distance, closest_cell};
 }
 
-MT Geometry::CollisionType(const Point& p, const double energy, double r1, double r2) const {
+std::pair<MT, double> Geometry::CollisionType(const Point& p, const double energy, double r1, double r2) const {
   for (const auto& cell : cells_)
   {
     if (cell.Contains(p)) return cell.GetFill().SampleReaction(energy, r1, r2);
   }
-  return MT::MISSED;
+  return {MT::MISSED, 1.0};
 }
 }  // namespace charmander

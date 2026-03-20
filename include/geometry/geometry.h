@@ -18,7 +18,7 @@ class Geometry {
 
   std::pair<double, const Cell*> DistanceToNextSurface(const Point& p, const Direction& d) const;
 
-  MT CollisionType(const Point& p, const double energy, double r1, double r2) const;
+  std::pair<MT, double> CollisionType(const Point& p, const double energy, double r1, double r2) const;
 
  private:
   const std::vector<Cell> cells_;

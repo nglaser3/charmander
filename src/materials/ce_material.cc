@@ -62,7 +62,7 @@ namespace charmander
     return static_cast<double>(xs);
   }
 
-  MT
+  std::pair<MT, double>
   CEMaterial::SampleReaction(double energy, double r1, double r2) const {
     r1 *= GetTotalXS(energy);
     size_t lower_energy = nuclides_.front().nuc->GetLowerEnergyBin(energy);
@@ -70,9 +70,9 @@ namespace charmander
     {
       r1 -= nuc_datum.atom_percent * nuc_datum.nuc->GetTotalXS(lower_energy, energy);
       if (r1 <= 0.0) {
-        return nuc_datum.nuc->SampleReaction(lower_energy, energy, r2);
+        return {nuc_datum.nuc->SampleReaction(lower_energy, energy, r2), nuc_datum.mass};
       }
     }
-    return MT::MISSED;
+    return {MT::MISSED, 1.0};
   }
 } // namespace charmander

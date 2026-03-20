@@ -87,18 +87,18 @@ TEST_F(GeometryGeometry, CollisionType) {
 
   Point in1 {0.0, 0.0, 0.0};
 
-  EXPECT_EQ(geom.CollisionType(in1, 1.0, 0.5, FP_TOLERANCE), MT::ELASTIC);
-  EXPECT_EQ(geom.CollisionType(in1, 1.0, 0.5, 0.25), MT::ELASTIC);
+  EXPECT_EQ(geom.CollisionType(in1, 1.0, 0.5, FP_TOLERANCE).first, MT::ELASTIC);
+  EXPECT_EQ(geom.CollisionType(in1, 1.0, 0.5, 0.25).first, MT::ELASTIC);
 
-  EXPECT_EQ(geom.CollisionType(in1, 1.0, 0.5, 0.25 + FP_TOLERANCE), MT::INELASTIC);
-  EXPECT_EQ(geom.CollisionType(in1, 1.0, 0.5 ,0.50), MT::INELASTIC);
+  EXPECT_EQ(geom.CollisionType(in1, 1.0, 0.5, 0.25 + FP_TOLERANCE).first, MT::INELASTIC);
+  EXPECT_EQ(geom.CollisionType(in1, 1.0, 0.5 ,0.50).first, MT::INELASTIC);
 
-  EXPECT_EQ(geom.CollisionType(in1, 1.0, 0.5 ,0.50 + FP_TOLERANCE), MT::FISSION);
-  EXPECT_EQ(geom.CollisionType(in1, 1.0, 0.5, 0.75), MT::FISSION);
+  EXPECT_EQ(geom.CollisionType(in1, 1.0, 0.5 ,0.50 + FP_TOLERANCE).first, MT::FISSION);
+  EXPECT_EQ(geom.CollisionType(in1, 1.0, 0.5, 0.75).first, MT::FISSION);
 
-  EXPECT_EQ(geom.CollisionType(in1, 1.0, 0.5, 0.75 + FP_TOLERANCE), MT::CAPTURE);
-  EXPECT_EQ(geom.CollisionType(in1, 1.0, 0.5, 1.0), MT::CAPTURE);
+  EXPECT_EQ(geom.CollisionType(in1, 1.0, 0.5, 0.75 + FP_TOLERANCE).first, MT::CAPTURE);
+  EXPECT_EQ(geom.CollisionType(in1, 1.0, 0.5, 1.0).first, MT::CAPTURE);
 
-  EXPECT_EQ(geom.CollisionType(in1, 1.0, 0.5, 1.0 + FP_TOLERANCE), MT::MISSED);
+  EXPECT_EQ(geom.CollisionType(in1, 1.0, 0.5, 1.0 + FP_TOLERANCE).first, MT::MISSED);
 }
 }  // namespace charmander
