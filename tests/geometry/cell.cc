@@ -34,7 +34,7 @@ class GeometryCell : public test_helpers::CharmanderXSEnvWrapper, public ::testi
 TEST_F(GeometryCell, Constructor) {
   NuclideData datum{nuc_obj_, 1.0};
   CEMaterial mat(1, {datum});
-  auto cyl = XCylinder(1.0, {0.0, 0.0, 0.0});
+  auto cyl = std::make_shared<XCylinder>(1.0, Point{0.0, 0.0, 0.0});
   Region region({{-cyl}});
 
   Cell* cell;
@@ -46,7 +46,7 @@ TEST_F(GeometryCell, Constructor) {
 TEST_F(GeometryCell, Contains) {
   NuclideData datum{nuc_obj_, 1.0};
   CEMaterial mat(1, {datum});
-  auto cyl = XCylinder(1.0, {0.0, 0.0, 0.0});
+  auto cyl = std::make_shared<XCylinder>(1.0, Point{0.0, 0.0, 0.0});
   Region region({{-cyl}});
 
   Cell cell(1, mat, region);
@@ -60,7 +60,7 @@ TEST_F(GeometryCell, Contains) {
 TEST_F(GeometryCell, Distance) {
   NuclideData datum{nuc_obj_, 1.0};
   CEMaterial mat(1, {datum});
-  auto cyl = XCylinder(1.0, {0.0, 0.0, 0.0});
+  auto cyl = std::make_shared<XCylinder>(1.0, Point{0.0, 0.0, 0.0});
   Region region({{-cyl}});
 
   Cell cell(1, mat, region);
@@ -77,7 +77,7 @@ TEST_F(GeometryCell, Distance) {
 TEST_F(GeometryCell, TotalXS) {
   NuclideData datum{nuc_obj_, 1.0};
   CEMaterial mat(1, {datum});
-  auto cyl = XCylinder(1.0, {0.0, 0.0, 0.0});
+  auto cyl = std::make_shared<XCylinder>(1.0, Point{0.0, 0.0, 0.0});
   Region region({{-cyl}});
 
   Cell cell(1, mat, region); 
@@ -88,7 +88,7 @@ TEST_F(GeometryCell, TotalXS) {
 TEST_F(GeometryCell, Getters) {
   NuclideData datum{nuc_obj_, 1.0};
   CEMaterial mat(1, {datum});
-  auto cyl = XCylinder(1.0, {0.0, 0.0, 0.0});
+  auto cyl = std::make_shared<XCylinder>(1.0, Point{0.0, 0.0, 0.0});
   Region region({{-cyl}});
 
   Cell cell(1, mat, region); 
