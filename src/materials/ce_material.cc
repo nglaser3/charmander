@@ -82,4 +82,11 @@ namespace charmander
     }
     return {MT::MISSED, 1.0};
   }
+
+  double CEMaterial::GetMass() const {
+    double total_mass = 0.0;
+    for (const auto& nucdatum : nuclides_)
+        total_mass += nucdatum.atom_percent * nucdatum.mass;
+    return total_mass;
+  }
 } // namespace charmander

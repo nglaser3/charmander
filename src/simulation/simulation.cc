@@ -36,7 +36,7 @@ namespace charmander
           // update to next position, returns true if leaked
           if (!TransportParticle(p, lcg)) {
             // check reaction
-            MT rxn = CollideParticle(p, lcg);
+            MT rxn = (settings_.implicit_capture) ? CollideImplicitCapture(p, lcg) : CollideParticle(p, lcg);
             // tally interaction
             TallyParticle(i, p, rxn);
           } else {
@@ -78,6 +78,20 @@ namespace charmander
       break;
     }
     return reaction;
+  }
+
+  MT Simulation::CollideImplicitCapture(Particle& p, LinearCongruentialGenerator& lcg) const {
+    double p_nonabs = geom_.ProbabilityNonAbs(p.position, p.energy);
+    double mass = geom_.GetMass(p.position);
+
+    if (p_nonabs <= 0.0) {
+      p.alive = false;
+      return MT::CAPTURE;
+    }
+
+    p.weight *= p_nonabs;
+    ScatterParticle(p, lcg, mass);
+    return MT::ELASTIC;
   }
 
   void Simulation::ScatterParticle(Particle& p, LinearCongruentialGenerator& lcg, double A) const {

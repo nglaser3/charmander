@@ -26,6 +26,7 @@ namespace charmander
     double GetTotalXS(double energy) const;
     double GetXSFromMT(MT mt, double energy) const;
     std::pair<MT, double> SampleReaction(double energy, double r1, double r2) const;
+    double GetMass() const;
 
   private:
     const int id_;

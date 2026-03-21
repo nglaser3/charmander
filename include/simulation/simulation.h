@@ -18,6 +18,7 @@ namespace charmander
     Source source;
     int histories = 10000;
     int batches = 100;
+    bool implicit_capture=false;
   };
 
   class Simulation
@@ -36,6 +37,7 @@ namespace charmander
 
     bool TransportParticle(Particle& p, LinearCongruentialGenerator& lcg) const;
     MT CollideParticle(Particle& p, LinearCongruentialGenerator& lcg) const;
+    MT CollideImplicitCapture(Particle& p, LinearCongruentialGenerator& lcg) const;
     void ScatterParticle(Particle& p, LinearCongruentialGenerator& lcg, double A) const;
     void EnergyTally(const Particle& p);
     void TallyParticle(size_t batch, const Particle& p, MT reaction);

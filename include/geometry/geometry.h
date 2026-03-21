@@ -20,6 +20,9 @@ class Geometry {
 
   std::pair<MT, double> CollisionType(const Point& p, const double energy, double r1, double r2) const;
 
+  double ProbabilityNonAbs(const Point& p, const double energy) const;
+
+  double GetMass(const Point& p) const; 
  private:
   const std::vector<Cell> cells_;
 };

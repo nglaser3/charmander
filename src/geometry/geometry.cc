@@ -52,4 +52,25 @@ std::pair<MT, double> Geometry::CollisionType(const Point& p, const double energ
   }
   return {MT::MISSED, 1.0};
 }
+
+double Geometry::ProbabilityNonAbs(const Point& p, const double energy) const {
+  for (const auto& cell : cells_)
+  {
+    if (cell.Contains(p)) {
+      auto& fill = cell.GetFill();
+      double total_xs = fill.GetTotalXS(energy);
+      double abs_xs = fill.GetXSFromMT(MT::CAPTURE, energy) + fill.GetXSFromMT(MT::FISSION, energy);
+      return 1 - abs_xs / total_xs;
+    }
+  }
+  return 0.0;  
+}
+
+double Geometry::GetMass(const Point& p) const {
+  for (const auto& cell : cells_)
+  {
+    if (cell.Contains(p)) return cell.GetFill().GetMass();
+  }
+  return 0.0;
+}
 }  // namespace charmander
