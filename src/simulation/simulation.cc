@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iomanip>
 #include <string> 
+#include <chrono>
 
 #include "basic_types.h"
 #include "constants.h"
@@ -16,6 +17,7 @@ namespace charmander
   void Simulation::Run() {
     std::string header(80, '=');
     std::cout<<std::endl<<header<<std::endl<<"Beginning Simulation"<<std::endl<<header<<std::endl;
+    auto start = std::chrono::high_resolution_clock::now();
     for (size_t i = 0; i < settings_.batches; i++)
     {
       for (size_t j = 0; j < settings_.histories; j++)
@@ -26,7 +28,7 @@ namespace charmander
         // init particle
         Particle p{
           settings_.source.point, 
-          SampleDirection(lcg),
+          settings_.source.direction,
           settings_.source.energy
         };
 
@@ -47,11 +49,18 @@ namespace charmander
           Roulette(p, lcg);
         }
       }
+      std::cout<<"."<<std::flush;
     }
-    std::cout<<"Finished Simulation"<<std::endl<<header<<std::endl;
-    std::cout<<"Finalizing and Writing Tallies"<<std::endl<<header<<std::endl;
+    std::chrono::duration<double> elapsed = std::chrono::high_resolution_clock::now() - start;
+    std::cout<<std::endl;
+    std::cout<<header<<"Finished Simulation"<<std::endl;
+    std::cout<<"\tElapsed Time: "<<elapsed.count()<<" seconds"<<std::endl;
+    std::cout<<"\tTime per Particle: "<<elapsed.count() / static_cast<double>(settings_.batches * settings_.histories)<<" seconds"<<std::endl;
+    std::cout<<header<<std::endl;
+    std::cout<<"Finalizing and Writing Tallies"<<std::endl;
     FinalizeTallies();
     WriteOutTallies();
+    std::cout<<"\tComplete"<<std::endl<<header<<std::endl;
   }
 
   bool Simulation::TransportParticle(Particle& p, LinearCongruentialGenerator& lcg) const {
