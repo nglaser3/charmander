@@ -11,7 +11,6 @@ namespace charmander
 {
   struct Source {
     Point point;
-    Direction direction;
     double energy;
   };
 

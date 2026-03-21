@@ -28,7 +28,7 @@ namespace charmander
         // init particle
         Particle p{
           settings_.source.point, 
-          settings_.source.direction,
+          SampleDirection(lcg),
           settings_.source.energy
         };
 
@@ -116,7 +116,7 @@ namespace charmander
   void Simulation::Roulette(Particle& p, LinearCongruentialGenerator& lcg) const {
     if (p.energy > settings_.roulette_energy_) return;
     
-    if (lcg() < (1 / settings_.roulette_diff_)) {
+    if (lcg() < (1.0 / settings_.roulette_diff_)) {
       p.weight *= settings_.roulette_diff_;
     } else p.alive = false;
   }
