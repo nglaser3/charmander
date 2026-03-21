@@ -23,6 +23,8 @@ class Geometry {
   double ProbabilityNonAbs(const Point& p, const double energy) const;
 
   double GetMass(const Point& p) const; 
+
+  const Cell* FindCell(const Point& p) const;
  private:
   const std::vector<Cell> cells_;
 };

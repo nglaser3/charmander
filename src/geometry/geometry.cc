@@ -11,13 +11,12 @@ Point Geometry::NewPosition(const Point& p, const Direction& d, double mfp, cons
   while (mfp > 0.0)
   {
     // get next distance to surface
-    auto [distance, cell] = DistanceToNextSurface(new_p, d);
+    const Cell* cell = FindCell(new_p);
+    if (!cell) return INF_POINT;
 
-    if (distance == INF) {
-      new_p = {INF, INF, INF};
-      mfp = 0.0;
-      break;
-    }
+    double distance = cell->Distance(new_p, d);
+
+    if (distance == INF) return INF_POINT;
 
     double total_xs = cell->TotalXS(energy);
     if (mfp < distance * total_xs) {
@@ -73,4 +72,11 @@ double Geometry::GetMass(const Point& p) const {
   }
   return 0.0;
 }
+
+  const Cell* Geometry::FindCell(const Point& p) const {
+    for (const auto& cell : cells_) {
+      if (cell.Contains(p)) return &cell;
+    }
+    return nullptr;
+  }
 }  // namespace charmander

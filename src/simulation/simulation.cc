@@ -65,7 +65,7 @@ namespace charmander
 
   bool Simulation::TransportParticle(Particle& p, LinearCongruentialGenerator& lcg) const {
     p.position = geom_.NewPosition(p.position, p.direction, SampleMFP(lcg), p.energy);
-    return p.position == INF_POINT;
+    return geom_.FindCell(p.position) == nullptr;
   }
 
   MT Simulation::CollideParticle(Particle& p, LinearCongruentialGenerator& lcg) const {
@@ -95,7 +95,11 @@ namespace charmander
     double p_nonabs = geom_.ProbabilityNonAbs(p.position, p.energy);
     double mass = geom_.GetMass(p.position);
 
-    if (p_nonabs <= 0.0) {
+    if (!std::isfinite(p_nonabs) || p_nonabs <= 0.0 || p_nonabs > 1.0) {
+      std::cerr << "Bad p_nonabs = " << p_nonabs
+                << " at energy " << p.energy
+                << " position " << p.position.x << " "
+                << p.position.y << " " << p.position.z << std::endl;
       p.alive = false;
       return MT::CAPTURE;
     }

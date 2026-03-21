@@ -50,9 +50,9 @@ namespace charmander
   double
   CEMaterial::GetTotalXS(double energy) const {
     float total_xs = 0.0f;
-    size_t lower_energy = nuclides_.front().nuc->GetLowerEnergyBin(energy);
     for (const auto& nucdata : nuclides_)
     {
+      size_t lower_energy = nucdata.nuc->GetLowerEnergyBin(energy);
       total_xs += number_density_ * nucdata.atom_percent * nucdata.nuc->GetTotalXS(lower_energy, energy);
     }
     return static_cast<double>(total_xs);
@@ -63,7 +63,7 @@ namespace charmander
     float xs = 0.0f;
     for (const auto& nucdata : nuclides_)
     {
-      size_t lower_energy = nuclides_.front().nuc->GetLowerEnergyBin(energy);
+      size_t lower_energy = nucdata.nuc->GetLowerEnergyBin(energy);
       xs += number_density_ * nucdata.atom_percent * nucdata.nuc->GetXSFromMT(mt, lower_energy, energy);
     }
     return static_cast<double>(xs);
@@ -72,9 +72,9 @@ namespace charmander
   std::pair<MT, double>
   CEMaterial::SampleReaction(double energy, double r1, double r2) const {
     r1 *= GetTotalXS(energy);
-    size_t lower_energy = nuclides_.front().nuc->GetLowerEnergyBin(energy);
     for (const auto& nuc_datum : nuclides_)
     {
+      size_t lower_energy = nuc_datum.nuc->GetLowerEnergyBin(energy);
       r1 -= number_density_ * nuc_datum.atom_percent * nuc_datum.nuc->GetTotalXS(lower_energy, energy);
       if (r1 <= 0.0) {
         return {nuc_datum.nuc->SampleReaction(lower_energy, energy, r2), nuc_datum.mass};
