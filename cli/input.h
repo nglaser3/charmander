@@ -60,8 +60,8 @@ std::pair<Geometry, Settings> UserInput() {
 
     auto x0 = std::make_shared<XPlane>(0.0);
     auto x1 = std::make_shared<XPlane>(5.0);
-    auto x2 = std::make_shared<XPlane>(10.0);
-    auto x3 = std::make_shared<XPlane>(15.0);
+    auto x2 = std::make_shared<XPlane>(15.0);
+    auto x3 = std::make_shared<XPlane>(30.0);
 
     auto y0 = std::make_shared<YPlane>(-50.0);
     auto y1 = std::make_shared<YPlane>(50.0);
@@ -76,14 +76,14 @@ std::pair<Geometry, Settings> UserInput() {
 
     Geometry geom({region1, region2, region3});
 
-    Source source{{0.0, 0.0, 0.0}, {1.0, 0.0, 0.0}, 1e6};
+    Source source{{15.0, 0.0, 0.0}, 1e6};
     Settings settings = {
       source, //source
       100000, // histories
       200, //batches
       false, //implicit capture
-      0.0, //roulette energy
-      1.0, // roulette diff
+      1e4, //roulette energy
+      5.0, // roulette diff
     };
 
     return {geom, settings};
