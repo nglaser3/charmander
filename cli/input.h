@@ -32,48 +32,62 @@ namespace charmander
     return nucmap;
   }
 
-  std::pair<Geometry, Settings> UserInput() {
-    // materials
-    auto nuclides = MakeNuclides({"H1", "O16", "U235", "U238"});
-    
-    CEMaterial uo2(1, {
-      {nuclides["O16"], 2.0/3.0, 16.0},
-      {nuclides["U235"], 1.0/3.0 * 0.1975, 235.0},
-      {nuclides["U238"], 1.0/3.0 * 0.8025, 238.0}
-    }, 10.5);
+std::pair<Geometry, Settings> UserInput() {
+    auto nuclides = MakeNuclides({
+      "H1", "O16",
+      "Fe54", "Fe56", "Fe57", "Fe58",
+      "Pb204", "Pb206", "Pb207", "Pb208"
+    });
 
-    CEMaterial water(2, {
-      {nuclides["H1"], 2.0/3.0, 1.0},
+    CEMaterial water(1, {
+      {nuclides["H1"],  2.0/3.0, 1.0},
       {nuclides["O16"], 1.0/3.0, 16.0}
     }, 1.0);
 
-    // geometry
-    auto inner = std::make_shared<ZCylinder>(10.0, Point{0.0, 0.0, 0.0});
-    auto outer = std::make_shared<ZCylinder>(50.0, Point{0.0, 0.0, 0.0});
-    auto top = std::make_shared<ZPlane>(1000.0);
-    auto bottom = std::make_shared<ZPlane>(-1000.0);
-    auto right = std::make_shared<XPlane>(100.0);
-    auto left = std::make_shared<XPlane>(-100.0);
-    auto back = std::make_shared<YPlane>(100.0);
-    auto front = std::make_shared<YPlane>(-100.0);
+    CEMaterial iron(2, {
+      {nuclides["Fe54"], 0.05845, 54.0},
+      {nuclides["Fe56"], 0.91754, 56.0},
+      {nuclides["Fe57"], 0.02119, 57.0},
+      {nuclides["Fe58"], 0.00282, 58.0}
+    }, 7.87);
 
-    Region top_bottom = +bottom & -top;
-    Region bbox = +left & -right & +front & -back;
-    Cell inwater(1, water, -inner & top_bottom);
-    Cell fuel(2, uo2, +inner & -outer & top_bottom);
-    Cell outwater(3, water, +outer & top_bottom & bbox);
-    Geometry geom({inwater, fuel, outwater});
+    CEMaterial lead(3, {
+      {nuclides["Pb204"], 0.014, 204.0},
+      {nuclides["Pb206"], 0.241, 206.0},
+      {nuclides["Pb207"], 0.221, 207.0},
+      {nuclides["Pb208"], 0.524, 208.0}
+    }, 11.34);
 
-    // settings
-    Source source{{0.0, 0.0, 0.0}, 1e6};
+    auto x0 = std::make_shared<XPlane>(0.0);
+    auto x1 = std::make_shared<XPlane>(5.0);
+    auto x2 = std::make_shared<XPlane>(10.0);
+    auto x3 = std::make_shared<XPlane>(15.0);
+
+    auto y0 = std::make_shared<YPlane>(-50.0);
+    auto y1 = std::make_shared<YPlane>(50.0);
+    auto z0 = std::make_shared<ZPlane>(-50.0);
+    auto z1 = std::make_shared<ZPlane>(50.0);
+
+    Region box = +y0 & -y1 & +z0 & -z1;
+
+    Cell region1(1, water, +x0 & -x1 & box);
+    Cell region2(2, iron,  +x1 & -x2 & box);
+    Cell region3(3, lead,  +x2 & -x3 & box);
+
+    Geometry geom({region1, region2, region3});
+
+    Source source{{0.0, 0.0, 0.0}, {1.0, 0.0, 0.0}, 1e6};
     Settings settings = {
-      source,
-      10000,
-      100
+      source, //source
+      100000, // histories
+      200, //batches
+      false, //implicit capture
+      0.0, //roulette energy
+      1.0, // roulette diff
     };
 
     return {geom, settings};
-  }
+}
 
 } // namespace charmander
 
