@@ -43,6 +43,8 @@ namespace charmander
             TallyParticle(i, p, MT::MISSED);
             break;
           }
+
+          Roulette(p, lcg);
         }
       }
     }
@@ -100,6 +102,14 @@ namespace charmander
 
     double delta_e = (1.0 + A*A + 2.0*A*mu_cm) / ((1.0+A) * (1.0+A));
     p.energy *= delta_e;
+  }
+
+  void Simulation::Roulette(Particle& p, LinearCongruentialGenerator& lcg) const {
+    if (p.energy > settings_.roulette_energy_) return;
+    
+    if (lcg() < (1 / settings_.roulette_diff_)) {
+      p.weight *= settings_.roulette_diff_;
+    } else p.alive = false;
   }
 
   void Simulation::EnergyTally(const Particle& p) {

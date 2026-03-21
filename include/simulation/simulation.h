@@ -19,6 +19,8 @@ namespace charmander
     int histories = 10000;
     int batches = 100;
     bool implicit_capture=false;
+    double roulette_energy_ = 1e3;
+    double roulette_diff_ = 5;
   };
 
   class Simulation
@@ -39,6 +41,7 @@ namespace charmander
     MT CollideParticle(Particle& p, LinearCongruentialGenerator& lcg) const;
     MT CollideImplicitCapture(Particle& p, LinearCongruentialGenerator& lcg) const;
     void ScatterParticle(Particle& p, LinearCongruentialGenerator& lcg, double A) const;
+    void Roulette(Particle& p, LinearCongruentialGenerator& lcg) const;
     void EnergyTally(const Particle& p);
     void TallyParticle(size_t batch, const Particle& p, MT reaction);
     void FinalizeTallies();
